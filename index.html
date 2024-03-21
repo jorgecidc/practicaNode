@@ -2,48 +2,71 @@
 <html lang="en">
 
 <head>
-  <title>Prueba Node</title>
-  <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-  <meta name="viewport"
-    content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
-  <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
-  <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet" />
-  <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet" />
-  <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet" />
-  <link href="/pix-admin/css/custom.css" rel="stylesheet" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
-  <meta name="msapplication-TileColor" content="#112233" />
-  <meta name="theme-color" content="#ffffff" />
+    <title>Prueba Node</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
+    <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet" />
+    <link href="/pix-admin/css/custom.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
+    <meta name="msapplication-TileColor" content="#112233" />
+    <meta name="theme-color" content="#ffffff" />
 </head>
 
 <body>
-  <div class="pix-tarjeta">
-    <div class="pix-tarjeta-titulo">
-      <i class="fas fa-user"></i>Empleados
-    </div>
-    <div class="pix-resultados-registros">
-      <div class="pix-registro">
-        <div class="pix-registro-imagen">
-          <a href="formulario.html"
-            id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img
-              src="https://oficinavirtual.pixelinnova.com/pix-admin/ficheros/1/foto-ejemplo.jpg?w=64&amp;h=64&amp;mode=crop&amp;autorotate=1"
-              loading="lazy"></a>
+    <div class="pix-tarjeta">
+        <div class="pix-tarjeta-titulo">
+            <i class="fas fa-user"></i>Empleados
         </div>
-        <div class="pix-registro-contenido">
-          <a href="formulario.html" id="CPH_Cuerpo_pixResultados_rptResultados_btnContenidoRegistro_0"><strong>Proyecto de ejemplo</strong>
-            <p>Para obtener los mejores resultados en un proyecto, el&nbsp;desarrollo web y la estrategia de marketing digital&nbsp;deben estar perfectamente sincronizados.
-            Contamos con&nbsp;dos equipos&nbsp;de expertos en comunicación, marketing y desarrollo, capaces de hacerse cargo eficazmente del 100% de cada proyecto, con&nbsp;estrategias&nbsp;de éxito,&nbsp;objetivos&nbsp;claros y potenciando tu marca o negocio.
-            Por eso, queremos ser tu&nbsp;agencia de marketing online y diseño web en Salamanca.</p>
+        <div class="pix-resultados-registros" id="datosEmpleados">
+            <!-- Aquí se insertarán los datos de los empleados -->
         </div>
-      </div>
     </div>
-  </div>
+
+    <script>
+        // Manejar la solicitud de datos de empleados
+        function obtenerDatosEmpleados() {
+            // Realizar una solicitud AJAX al servidor para obtener los datos de los empleados
+            fetch('/datos_empleados')
+                .then(response => response.json()) // Convertir la respuesta a formato JSON
+                .then(data => {
+                    console.log('Datos de empleados:', data); // Mostrar los datos en la consola
+
+                    // Actualizar el DOM con los datos de los empleados
+                    const datosEmpleadosDiv = document.getElementById('datosEmpleados');
+                    datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
+
+                    // Iterar sobre los datos de los empleados y agregarlos al DOM
+                    data.forEach(empleado => {
+                        const empleadoElement = document.createElement('div');
+                        empleadoElement.innerHTML = `
+                            <div class="pix-registro">
+                                <div class="pix-registro-contenido">
+                                    <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
+                                        <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
+                                        <p class="datosEmpleado">Correo electrónico: ${empleado.EMAIL}</p>
+                                        <p class="datosEmpleado">Teléfono: ${empleado.TELEFONO}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        datosEmpleadosDiv.appendChild(empleadoElement);
+                    });
+                })
+                .catch(error => console.error('Error al obtener datos de empleados:', error));
+        }
+
+        // Llamar a la función para obtener datos de empleados cuando se cargue la página
+        window.onload = obtenerDatosEmpleados;
+    </script>
 </body>
 
 </html>
