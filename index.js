@@ -44,8 +44,60 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(responseData);
     });
+  } else if (pathname === '/guardar-empleado' && req.method === 'POST') {
+    console.log('Solicitud para guardar empleado recibida');
+
+    let requestBody = '';
+    req.on('data', (chunk) => {
+      requestBody += chunk.toString(); // Agrega el cuerpo de la solicitud al requestBody
+    });
+
+    req.on('end', () => {
+      // Parsea los datos del cuerpo de la solicitud como JSON
+      const { nombre, apellido, email, telefono } = JSON.parse(requestBody);
+
+      // Realiza la inserción en la base de datos
+      connection.query('INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, SINO) VALUES (?, ?, ?, ?, 1)', [nombre, apellido, email, telefono], (error, results) => {
+        if (error) {
+          console.error('Error al insertar empleado en la base de datos:', error);
+          res.writeHead(500);
+          res.end('Error al guardar empleado en la base de datos');
+          return;
+        }
+
+        console.log('Empleado guardado correctamente en la base de datos');
+        // Redirigir al cliente de vuelta a la página principal (index.html) después de la inserción
+        res.writeHead(302, { 'Location': '/index.html' });
+        res.end();
+      });
+    });
+  } else if (pathname === '/marcar-como-eliminado' && req.method === 'PUT') {
+    console.log('Solicitud para marcar empleado como eliminado recibida');
+
+    const { id } = url.parse(req.url, true).query;
+
+    if (!id) {
+        console.error('Error: No se proporcionó un ID válido para marcar como eliminado');
+        res.writeHead(400);
+        res.end('Error: No se proporcionó un ID válido para marcar como eliminado');
+        return;
+    }
+
+    // Actualizar el campo SINO de la base de datos para marcar al empleado como eliminado
+    connection.query('UPDATE empleado SET SINO = 0 WHERE ID = ?', [id], (error, results) => {
+        if (error) {
+            console.error('Error al marcar empleado como eliminado en la base de datos:', error);
+            res.writeHead(500);
+            res.end('Error al marcar empleado como eliminado en la base de datos');
+            return;
+        }
+
+        console.log('Empleado marcado como eliminado correctamente en la base de datos');
+        res.writeHead(200);
+        res.end('Empleado marcado como eliminado correctamente');
+    });
   } else {
-    // Si la ruta no coincide con /datos_empleados, asumimos que es un archivo estático
+    // Si la ruta no coincide con /datos_empleados, /guardar-empleado o /marcar-como-eliminado, asumimos que es un archivo estático
     let filePath = '.' + pathname;
     // Si la ruta es '/', servir el archivo index.html
     if (filePath === './') {

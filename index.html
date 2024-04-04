@@ -29,7 +29,9 @@
         <div class="pix-resultados-registros" id="datosEmpleados">
             <!-- Aquí se insertarán los datos de los empleados -->
         </div>
+        
     </div>
+    <a href="formulario.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
 
     <script>
         // Manejar la solicitud de datos de empleados
@@ -56,12 +58,35 @@
                                         <p class="datosEmpleado">Teléfono: ${empleado.TELEFONO}</p>
                                     </a>
                                 </div>
+                                <div class="pix-registro-acciones">
+                                    <button class="btnEliminar" onclick="marcarComoEliminado(${empleado.ID})">Eliminar</button>
+                                </div>
                             </div>
                         `;
                         datosEmpleadosDiv.appendChild(empleadoElement);
                     });
                 })
                 .catch(error => console.error('Error al obtener datos de empleados:', error));
+        }
+
+        // Función para marcar un empleado como "eliminado"
+        function marcarComoEliminado(idEmpleado) {
+            fetch(`/marcar-como-eliminado?id=${idEmpleado}`, {
+                method: 'PUT'
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Empleado marcado como eliminado correctamente');
+                    obtenerDatosEmpleados();
+                } else {
+                    console.error('Error al marcar como eliminado empleado');
+                    alert('Error al marcar como eliminado empleado');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud de marcar como eliminado empleado:', error);
+                alert('Error al enviar la solicitud de marcar como eliminado empleado');
+            });
         }
 
         // Llamar a la función para obtener datos de empleados cuando se cargue la página

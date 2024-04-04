@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Prueba Node</title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
@@ -19,52 +20,47 @@
     <meta name="msapplication-TileColor" content="#112233" />
     <meta name="theme-color" content="#ffffff" />
 </head>
+
 <body>
-<div class="pix-grid pad-8">
-    <div class="pix-fila">
-        <div class="pc-12 tb-12 mv-12">
-            <div class="pix-tarjeta" id="pixTarjetaFicha">
-                <div class="pix-tarjeta-titulo">
-                    <i class="fas fa-folder-tree"></i>Formulario
-                </div>
-                <div class="pix-grid pad-8">
-                    <div class="pix-fila">
-                        <div id="CPH_Cuerpo_rptCampos_pixDivCelda_0" class="pc-12 tb-12 mv-12">
-                            <div class="pix-campo pix-campo-oculto pix-relleno">
-                                <!-- Este campo podría ser para el ID del empleado, si lo necesitas -->
-                                <input name="ctl00$CPH_Cuerpo$rptCampos$ctl00$ctlID_ENTIDAD" type="hidden" id="CPH_Cuerpo_rptCampos_ctlID_ENTIDAD_0" value="1">
+    <div class="pix-grid pad-8">
+        <div class="pix-fila">
+            <div class="pc-12 tb-12 mv-12">
+                <div class="pix-tarjeta" id="pixTarjetaFicha">
+                    <div class="pix-tarjeta-titulo">
+                        <i class="fas fa-folder-tree"></i>Formulario
+                    </div>
+                    <div class="pix-grid pad-8">
+                        <div class="pix-fila">
+                            <div id="nombreField" class="pc-12 tb-12 mv-12">
+                                <label for="nombre">Nombre</label>
+                                <div class="pix-campo pix-relleno">
+                                    <input name="nombre" type="text" id="nombre" placeholder="Nombre" maxlength="200" required>
+                                    <div class="pix-contador-caracteres">0/200</div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="nombreField" class="pc-12 tb-12 mv-12">
-                            <label for="nombre">Nombre</label>
-                            <div class="pix-campo pix-relleno">
-                                <!-- Campo de nombre con valor prellenado -->
-                                <input name="ctl00$CPH_Cuerpo$rptCampos$ctl02$ctlNOMBRE" type="text" id="nombre" placeholder="Nombre" maxlength="200" required="required">
-                                <div class="pix-contador-caracteres">0/200</div>
+                            <div id="apellidoField" class="pc-12 tb-12 mv-12">
+                                <label for="apellido">Apellidos</label>
+                                <div class="pix-campo pix-relleno">
+                                    <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
+                                    <div class="pix-contador-caracteres">0/200</div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="apellidoField" class="pc-12 tb-12 mv-12">
-                            <label for="apellido">Apellidos</label>
-                            <div class="pix-campo pix-relleno">
-                                <!-- Campo de apellido con valor prellenado -->
-                                <input name="ctl00$CPH_Cuerpo$rptCampos$ctl02$ctlAPELLIDO" type="text" id="apellido" placeholder="Apellido" maxlength="200" required="required">
-                                <div class="pix-contador-caracteres">0/200</div>
+                            <div id="emailField" class="pc-12 tb-12 mv-12">
+                                <label for="email">Email</label>
+                                <div class="pix-campo pix-relleno">
+                                    <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
+                                    <div class="pix-contador-caracteres">0/200</div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="emailField" class="pc-12 tb-12 mv-12">
-                            <label for="email">Email</label>
-                            <div class="pix-campo pix-relleno">
-                                <!-- Campo de email con valor prellenado -->
-                                <input name="ctl00$CPH_Cuerpo$rptCampos$ctl02$ctlEMAIL" type="email" id="email" placeholder="Email" maxlength="200" required="required">
-                                <div class="pix-contador-caracteres">0/200</div>
+                            <div id="telefonoField" class="pc-12 tb-12 mv-12">
+                                <label for="telefono">Teléfono</label>
+                                <div class="pix-campo pix-relleno">
+                                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
+                                    <div class="pix-contador-caracteres">0/200</div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="telefonoField" class="pc-12 tb-12 mv-12">
-                            <label for="telefono">Telefono</label>
-                            <div class="pix-campo pix-relleno">
-                                <!-- Campo de teléfono con valor prellenado -->
-                                <input name="ctl00$CPH_Cuerpo$rptCampos$ctl02$ctlTELEFONO" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required="required">
-                                <div class="pix-contador-caracteres">0/200</div>
+                            <div class="pc-12 tb-12 mv-12">
+                                <input id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" type="submit" name="ctl00$CPH_Acciones$btnGrabar">
                             </div>
                         </div>
                     </div>
@@ -72,61 +68,43 @@
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Función para mostrar el formulario con los datos del empleado seleccionado
-    function mostrarFormulario(id, nombre, apellido, email, telefono) {
-        // Llenar los campos del formulario con los datos recibidos
-        document.getElementById('nombre').value = decodeURIComponent(nombre);
-        document.getElementById('apellido').value = decodeURIComponent(apellido);
-        document.getElementById('email').value = decodeURIComponent(email);
-        document.getElementById('telefono').value = decodeURIComponent(telefono);
+    <script>
+        document.getElementById('btnGuardar').addEventListener('click', function () {
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const email = document.getElementById('email').value;
+            const telefono = document.getElementById('telefono').value;
 
-        // Actualizar el contador de caracteres
-        actualizarContador('nombre');
-        actualizarContador('apellido');
-        actualizarContador('email');
-        actualizarContador('telefono');
+            // Validar que los campos no estén vacíos
+            if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
+                alert('Por favor completa todos los campos');
+                return;
+            }
 
-        // Aquí puedes implementar la lógica para mostrar el formulario con los datos del empleado seleccionado
-        // Por ejemplo, podrías abrir una ventana modal o redirigir a otra página con el formulario
-    }
-
-    // Función para actualizar el contador de caracteres
-    function actualizarContador(campoId) {
-        const campo = document.getElementById(campoId);
-        const contador = campo.parentElement.querySelector('.pix-contador-caracteres');
-        contador.textContent = campo.value.length + '/200';
-    }
-
-    // Obtener los parámetros de la URL
-    const params = new URLSearchParams(window.location.search);
-    // Comprobar si hay datos en la URL
-    if (params.has('id') && params.has('nombre') && params.has('apellido') && params.has('email') && params.has('telefono')) {
-        // Obtener los valores de los parámetros
-        const id = params.get('id');
-        const nombre = params.get('nombre');
-        const apellido = params.get('apellido');
-        const email = params.get('email');
-        const telefono = params.get('telefono');
-        // Mostrar el formulario con los datos prellenados
-        mostrarFormulario(id, nombre, apellido, email, telefono);
-    }
-
-    // Agregar eventos de escucha para la entrada de texto y actualizar el contador de caracteres
-    document.getElementById('nombre').addEventListener('input', function() {
-        actualizarContador('nombre');
-    });
-    document.getElementById('apellido').addEventListener('input', function() {
-        actualizarContador('apellido');
-    });
-    document.getElementById('email').addEventListener('input', function() {
-        actualizarContador('email');
-    });
-    document.getElementById('telefono').addEventListener('input', function() {
-        actualizarContador('telefono');
-    });
-</script>
+            fetch('/guardar-empleado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nombre, apellido, email, telefono })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Empleado guardado correctamente');
+                        // Redireccionar al usuario a la página principal (index.html)
+                        window.location.href = '/index.html';
+                    } else {
+                        console.error('Error al guardar empleado');
+                        alert('Error al guardar empleado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar la solicitud:', error);
+                    alert('Error al enviar la solicitud');
+                });
+        });
+    </script>
 </body>
+
 </html>
