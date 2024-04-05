@@ -2,23 +2,24 @@
 <html lang="en">
 
 <head>
-    <title>Prueba Node</title>
-    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
-    <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
-    <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet" />
-    <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet" />
-    <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet" />
-    <link href="/pix-admin/css/custom.css" rel="stylesheet" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
-    <meta name="msapplication-TileColor" content="#112233" />
-    <meta name="theme-color" content="#ffffff" />
+    <title>Proyectos</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600">
+    <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css">
+    <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet">
+    <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet">
+    <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet">
+    <link href="/pix-admin/css/custom.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233">
+    <meta name="msapplication-TileColor" content="#112233">
+    <meta name="theme-color" content="#ffffff">
+
 </head>
 
 <body>
@@ -26,12 +27,22 @@
         <div class="pix-tarjeta-titulo">
             <i class="fas fa-user"></i>Empleados
         </div>
+        <div class="pix-fila">
+            <div class="pc-10 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="txtFiltroTexto">Buscar texto...</label>
+                    <input id="txtFiltroTexto" type="search" name="q">
+                </div>
+            </div> <div class="pc-2 tb-12 mv-12">
+                <a class="pix-btn pix-btn-filtros-busqueda" href="#" onclick="buscarPorNombre()"><i class="far fa-search"></i>Buscar</a>
+            </div>
+        </div>
         <div class="pix-resultados-registros" id="datosEmpleados">
             <!-- Aquí se insertarán los datos de los empleados -->
         </div>
-        
+
     </div>
-    <a href="formulario.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
+    <a href="formularioVacio.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
 
     <script>
         // Manejar la solicitud de datos de empleados
@@ -54,16 +65,29 @@
                                 <div class="pix-registro-contenido">
                                     <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
                                         <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
-                                        <p class="datosEmpleado">Correo electrónico: ${empleado.EMAIL}</p>
-                                        <p class="datosEmpleado">Teléfono: ${empleado.TELEFONO}</p>
                                     </a>
+                                    <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
                                 </div>
+                                
                                 <div class="pix-registro-acciones">
-                                    <button class="btnEliminar" onclick="marcarComoEliminado(${empleado.ID})">Eliminar</button>
+                                    <div>
+                                        <a href="#" class="pix-borrar-registro" onclick="marcarComoEliminado(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                                    </div>
                                 </div>
                             </div>
+
                         `;
                         datosEmpleadosDiv.appendChild(empleadoElement);
+                    });
+                    
+                    // Agregar evento click a los botones de menú desplegable
+                    const botonesMenu = document.querySelectorAll('.pix-mini-menu');
+                    botonesMenu.forEach(btn => {
+                        btn.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const menu = this;
+                            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+                        });
                     });
                 })
                 .catch(error => console.error('Error al obtener datos de empleados:', error));
@@ -72,21 +96,63 @@
         // Función para marcar un empleado como "eliminado"
         function marcarComoEliminado(idEmpleado) {
             fetch(`/marcar-como-eliminado?id=${idEmpleado}`, {
-                method: 'PUT'
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Empleado marcado como eliminado correctamente');
-                    obtenerDatosEmpleados();
-                } else {
-                    console.error('Error al marcar como eliminado empleado');
-                    alert('Error al marcar como eliminado empleado');
-                }
-            })
-            .catch(error => {
-                console.error('Error al enviar la solicitud de marcar como eliminado empleado:', error);
-                alert('Error al enviar la solicitud de marcar como eliminado empleado');
-            });
+                    method: 'PUT'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Empleado marcado como eliminado correctamente');
+                        obtenerDatosEmpleados();
+                    } else {
+                        console.error('Error al marcar como eliminado empleado');
+                        alert('Error al marcar como eliminado empleado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar la solicitud de marcar como eliminado empleado:', error);
+                    alert('Error al enviar la solicitud de marcar como eliminado empleado');
+                });
+        }
+
+        // Función para buscar por nombre
+        function buscarPorNombre() {
+            const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
+            if (textoBusqueda === '') {
+                obtenerDatosEmpleados(); // Si no se ingresa texto, mostrar todos los empleados
+            } else {
+                fetch('/datos_empleados') // Realizar una solicitud AJAX al servidor para obtener los datos de los empleados
+                    .then(response => response.json()) // Convertir la respuesta a formato JSON
+                    .then(data => {
+                        const empleadosFiltrados = data.filter(empleado => {
+                            const nombreCompleto = `${empleado.NOMBRE.toLowerCase()} ${empleado.APELLIDO.toLowerCase()}`;
+                            return nombreCompleto.includes(textoBusqueda);
+                        });
+
+                        // Mostrar solo los empleados que coinciden con la búsqueda
+                        const datosEmpleadosDiv = document.getElementById('datosEmpleados');
+                        datosEmpleadosDiv.innerHTML = '';
+                        empleadosFiltrados.forEach(empleado => {
+                            const empleadoElement = document.createElement('div');
+                            empleadoElement.innerHTML = `
+                                <div class="pix-registro">
+                                    <div class="pix-registro-contenido">
+                                        <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
+                                            <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
+                                        </a>
+                                        <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
+                                    </div>
+                                    
+                                    <div class="pix-registro-acciones">
+                                        <div>
+                                            <a href="#" class="pix-borrar-registro" onclick="marcarComoEliminado(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            datosEmpleadosDiv.appendChild(empleadoElement);
+                        });
+                    })
+                    .catch(error => console.error('Error al obtener datos de empleados:', error));
+            }
         }
 
         // Llamar a la función para obtener datos de empleados cuando se cargue la página
