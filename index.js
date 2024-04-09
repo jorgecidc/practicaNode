@@ -26,8 +26,25 @@ const server = http.createServer((req, res) => {
   // Parsear la URL para obtener la ruta
   const { pathname } = url.parse(req.url);
 
-  // Si la ruta coincide con el patrón para guardar empleado
-  if (pathname === '/guardar-empleado' && req.method === 'POST') {
+  // Si la ruta coincide con el patrón para obtener datos de empleados
+  if (pathname === '/datos_empleados') {
+    console.log('Solicitud de datos de empleados recibida');
+    // Realizar la consulta a la base de datos para obtener los datos de los empleados
+    connection.query('SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO FROM empleado WHERE SINO = true', (error, results) => {
+      if (error) {
+        console.error('Error al consultar la base de datos:', error);
+        res.writeHead(500);
+        res.end('Error al consultar la base de datos');
+        return;
+      }
+
+      // Enviar los datos de los empleados como respuesta en formato JSON
+      const responseData = JSON.stringify(results);
+      console.log('Datos de empleados enviados:', responseData);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(responseData);
+    });
+  } else if (pathname === '/guardar-empleado' && req.method === 'POST') {
     console.log('Solicitud para guardar empleado recibida');
 
     let requestBody = '';
@@ -39,15 +56,7 @@ const server = http.createServer((req, res) => {
       // Parsea los datos del cuerpo de la solicitud como JSON
       const { nombre, apellido, email, telefono } = JSON.parse(requestBody);
 
-      // Verificar si los campos del formulario están vacíos
-      if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
-        console.log('Campos del formulario vacíos, no se pudo guardar el empleado');
-        res.writeHead(400);
-        res.end('Campos del formulario vacíos, no se pudo guardar el empleado');
-        return;
-      }
-
-      // Insertar un nuevo empleado en la base de datos
+      // Realiza la inserción en la base de datos
       connection.query('INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, SINO) VALUES (?, ?, ?, ?, 1)', [nombre, apellido, email, telefono], (error, results) => {
         if (error) {
           console.error('Error al insertar empleado en la base de datos:', error);
@@ -63,7 +72,7 @@ const server = http.createServer((req, res) => {
       });
     });
   } else {
-    // Si la ruta no coincide con /guardar-empleado, asumimos que es un archivo estático
+    // Si la ruta no coincide con /datos_empleados o /guardar-empleado, asumimos que es un archivo estático
     let filePath = '.' + pathname;
     // Si la ruta es '/', servir el archivo index.html
     if (filePath === './') {

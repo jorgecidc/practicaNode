@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                             <div class="pc-12 tb-12 mv-12">
-                                <input id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" type="submit" value="Guardar">
+                                <input id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" type="submit" name="ctl00$CPH_Acciones$btnGrabar">
                             </div>
                         </div>
                     </div>
@@ -70,6 +70,31 @@
     </div>
 
     <script>
+        // Función para obtener los parámetros de la URL
+        function obtenerParametroURL(nombre) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(nombre);
+        }
+
+        // Función para prellenar el formulario con los datos del empleado
+        function prellenarFormulario() {
+            // Obtener los parámetros de la URL
+            const id = obtenerParametroURL('id');
+            const nombre = obtenerParametroURL('nombre');
+            const apellido = obtenerParametroURL('apellido');
+            const email = obtenerParametroURL('email');
+            const telefono = obtenerParametroURL('telefono');
+
+            // Asignar los valores a los campos del formulario
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('apellido').value = apellido;
+            document.getElementById('email').value = email;
+            document.getElementById('telefono').value = telefono;
+        }
+
+        // Llamar a la función para prellenar el formulario cuando se cargue la página
+        window.onload = prellenarFormulario;
+
         document.getElementById('btnGuardar').addEventListener('click', function () {
             const nombre = document.getElementById('nombre').value;
             const apellido = document.getElementById('apellido').value;
@@ -82,91 +107,27 @@
                 return;
             }
 
-            // Obtener los parámetros de la URL
-            const params = new URLSearchParams(window.location.search);
-            // Comprobar si hay datos en la URL
-            if (params.has('id')) {
-                const id = params.get('id');
-
-                // Enviar la solicitud para actualizar los datos del empleado
-                fetch(`/actualizar-empleado?id=${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ nombre, apellido, email, telefono })
+            fetch('/guardar-empleado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nombre, apellido, email, telefono })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Empleado guardado correctamente');
+                        // Redireccionar al usuario a la página principal (index.html)
+                        window.location.href = '/index.html';
+                    } else {
+                        console.error('Error al guardar empleado');
+                        alert('Error al guardar empleado');
+                    }
                 })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('Empleado actualizado correctamente');
-                            // Redireccionar al usuario a la página principal (index.html)
-                            window.location.href = '/index.html';
-                        } else {
-                            console.error('Error al actualizar empleado');
-                            alert('Error al actualizar empleado');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al enviar la solicitud:', error);
-                        alert('Error al enviar la solicitud');
-                    });
-            } else {
-                console.error('No se encontró el ID del empleado');
-                alert('No se encontró el ID del empleado');
-            }
-        });
-
-        // Función para mostrar el formulario con los datos del empleado seleccionado
-        function mostrarFormulario(id, nombre, apellido, email, telefono) {
-            // Llenar los campos del formulario con los datos recibidos
-            document.getElementById('nombre').value = decodeURIComponent(nombre);
-            document.getElementById('apellido').value = decodeURIComponent(apellido);
-            document.getElementById('email').value = decodeURIComponent(email);
-            document.getElementById('telefono').value = decodeURIComponent(telefono);
-
-            // Actualizar el contador de caracteres
-            actualizarContador('nombre');
-            actualizarContador('apellido');
-            actualizarContador('email');
-            actualizarContador('telefono');
-
-            // Aquí puedes implementar la lógica para mostrar el formulario con los datos del empleado seleccionado
-            // Por ejemplo, podrías abrir una ventana modal o redirigir a otra página con el formulario
-        }
-
-        // Función para actualizar el contador de caracteres
-        function actualizarContador(campoId) {
-            const campo = document.getElementById(campoId);
-            const contador = campo.parentElement.querySelector('.pix-contador-caracteres');
-            contador.textContent = campo.value.length + '/200';
-        }
-
-        // Obtener los parámetros de la URL
-        const params = new URLSearchParams(window.location.search);
-        // Comprobar si hay datos en la URL
-        if (params.has('id') && params.has('nombre') && params.has('apellido') && params.has('email') && params.has('telefono')) {
-            // Obtener los valores de los parámetros
-            const id = params.get('id');
-            const nombre = params.get('nombre');
-            const apellido = params.get('apellido');
-            const email = params.get('email');
-            const telefono = params.get('telefono');
-            // Mostrar el formulario con los datos prellenados
-            mostrarFormulario(id, nombre, apellido, email, telefono);
-        }
-
-        // Agregar eventos de escucha para la entrada de texto y actualizar el contador de caracteres
-        document.getElementById('nombre').addEventListener('input', function() {
-            actualizarContador('nombre');
-        });
-        document.getElementById('apellido').addEventListener('input', function() {
-            actualizarContador('apellido');
-        });
-        document.getElementById('email').addEventListener('input', function() {
-            actualizarContador('email');
-        });
-        document.getElementById('telefono').addEventListener('input', function() {
-            actualizarContador('telefono');
+                .catch(error => {
+                    console.error('Error al enviar la solicitud:', error);
+                    alert('Error al enviar la solicitud');
+                });
         });
     </script>
 </body>
