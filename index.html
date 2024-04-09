@@ -19,7 +19,6 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233">
     <meta name="msapplication-TileColor" content="#112233">
     <meta name="theme-color" content="#ffffff">
-
 </head>
 
 <body>
@@ -41,7 +40,6 @@
         <div class="pix-resultados-registros" id="datosEmpleados">
             <!-- Aquí se insertarán los datos de los empleados -->
         </div>
-
     </div>
     <a href="formularioVacio.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
 
@@ -76,7 +74,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         `;
                         datosEmpleadosDiv.appendChild(empleadoElement);
                     });
@@ -96,8 +93,12 @@
 
         // Función para marcar un empleado como "eliminado"
         function marcarComoEliminado(idEmpleado) {
-            fetch(`/marcar-como-eliminado?id=${idEmpleado}`, {
-                    method: 'PUT'
+            fetch(`/marcar-como-eliminado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: idEmpleado }) // Envía el ID del empleado en el cuerpo de la solicitud
                 })
                 .then(response => {
                     if (response.ok) {
