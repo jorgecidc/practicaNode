@@ -73,7 +73,7 @@
                                 
                                 <div class="pix-registro-acciones">
                                     <div>
-                                        <a href="#" class="pix-borrar-registro" onclick="marcarComoEliminado(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                                        <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
                                     </div>
                                 </div>
                             </div>
@@ -92,6 +92,13 @@
                     });
                 })
                 .catch(error => console.error('Error al obtener datos de empleados:', error));
+        }
+
+        // Función para confirmar antes de eliminar un empleado
+        function confirmarEliminar(idEmpleado) {
+            if (confirm("¿Realmente deseas eliminar este registro?")) {
+                marcarComoEliminado(idEmpleado);
+            }
         }
 
         // Función para marcar un empleado como "eliminado"
@@ -151,7 +158,7 @@
                                     
                                     <div class="pix-registro-acciones">
                                         <div>
-                                            <a href="#" class="pix-borrar-registro" onclick="marcarComoEliminado(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                                            <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
                                         </div>
                                     </div>
                                     
