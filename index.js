@@ -99,7 +99,7 @@
                         });
                 } else {
                     // Si no hay un ID, inserta un nuevo empleado en la base de datos
-                    connection.query('INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, SINO) VALUES (?, ?, ?, ?, "default.png", 1)',
+                    connection.query('INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, SINO) VALUES (?, ?, ?, ?, "imagen1.png", 1)',
                     [nombre, apellido, email, telefono], (error, results) => {
                         if (error) {
                             console.error('Error al insertar empleado en la base de datos:', error);
