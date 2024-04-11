@@ -61,6 +61,9 @@
                         const empleadoElement = document.createElement('div');
                         empleadoElement.innerHTML = `
                             <div class="pix-registro">
+                                <div class="pix-registro-imagen">
+                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
+                    </div>
                                 <div class="pix-registro-contenido">
                                     <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
                                         <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
@@ -148,6 +151,7 @@
                                             <a href="#" class="pix-borrar-registro" onclick="marcarComoEliminado(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             `;
                             datosEmpleadosDiv.appendChild(empleadoElement);

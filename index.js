@@ -56,7 +56,7 @@ const server = http.createServer((req, res) => {
     } else if (pathname === '/datos_empleados') {
         console.log('Solicitud de datos de empleados recibida');
         // Realizar la consulta a la base de datos para obtener los datos de los empleados
-        connection.query('SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO FROM empleado WHERE SINO = true', (error, results) => {
+        connection.query('SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG FROM empleado WHERE SINO = true', (error, results) => {
             if (error) {
                 console.error('Error al consultar la base de datos:', error);
                 res.writeHead(500);
