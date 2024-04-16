@@ -12,6 +12,13 @@
     <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet">
     <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet">
     <link href="/pix-admin/css/custom.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233">
+    <meta name="msapplication-TileColor" content="#112233">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/custom.css">
 </head>
 
@@ -59,7 +66,7 @@
                         <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
                     </div>
                                 <div class="pix-registro-contenido">
-                                    <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
+                                    <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
                                         <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
                                     </a>
                                     <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
@@ -135,25 +142,27 @@
 
                         // Mostrar solo los empleados que coinciden con la búsqueda
                         const datosEmpleadosDiv = document.getElementById('datosEmpleados');
-                        datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
+                        datosEmpleadosDiv.innerHTML = '';
                         empleadosFiltrados.forEach(empleado => {
                             const empleadoElement = document.createElement('div');
                             empleadoElement.innerHTML = `
                                 <div class="pix-registro">
                                     <div class="pix-registro-imagen">
-                                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                                    </div>
+                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
+                    </div>
                                     <div class="pix-registro-contenido">
-                                        <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
+                                        <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
                                             <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
                                         </a>
                                         <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
                                     </div>
+                                    
                                     <div class="pix-registro-acciones">
                                         <div>
                                             <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             `;
                             datosEmpleadosDiv.appendChild(empleadoElement);
@@ -163,8 +172,8 @@
             }
         }
 
-        // Llamar a la función para obtener los datos de los empleados al cargar la página
-        obtenerDatosEmpleados();
+        // Llamar a la función para obtener datos de empleados cuando se cargue la página
+        window.onload = obtenerDatosEmpleados;
     </script>
 </body>
 
