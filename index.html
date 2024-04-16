@@ -63,10 +63,10 @@
                         empleadoElement.innerHTML = `
                             <div class="pix-registro">
                                 <div class="pix-registro-imagen">
-                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                    </div>
+                                    <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
+                                </div>
                                 <div class="pix-registro-contenido">
-                                    <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
+                                    <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
                                         <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
                                     </a>
                                     <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
@@ -130,49 +130,46 @@
         function buscarPorNombre() {
             const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
             if (textoBusqueda === '') {
-                obtenerDatosEmpleados(); // Si no se ingresa texto, mostrar todos los empleados
-            } else {
-                fetch('/datos_empleados') // Realizar una solicitud AJAX al servidor para obtener los datos de los empleados
-                    .then(response => response.json()) // Convertir la respuesta a formato JSON
-                    .then(data => {
-                        const empleadosFiltrados = data.filter(empleado => {
-                            const nombreCompleto = `${empleado.NOMBRE.toLowerCase()} ${empleado.APELLIDO.toLowerCase()}`;
-                            return nombreCompleto.includes(textoBusqueda);
-                        });
-
-                        // Mostrar solo los empleados que coinciden con la búsqueda
-                        const datosEmpleadosDiv = document.getElementById('datosEmpleados');
-                        datosEmpleadosDiv.innerHTML = '';
-                        empleadosFiltrados.forEach(empleado => {
-                            const empleadoElement = document.createElement('div');
-                            empleadoElement.innerHTML = `
-                                <div class="pix-registro">
-                                    <div class="pix-registro-imagen">
-                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                    </div>
-                                    <div class="pix-registro-contenido">
-                                        <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
-                                            <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
-                                        </a>
-                                        <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
-                                    </div>
-                                    
-                                    <div class="pix-registro-acciones">
-                                        <div>
-                                            <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            `;
-                            datosEmpleadosDiv.appendChild(empleadoElement);
-                        });
-                    })
-                    .catch(error => console.error('Error al obtener datos de empleados:', error));
+                obtenerDatosEmpleados(); // Si no se ingresa ningún texto, mostrar todos los empleados
+                return;
             }
+
+            // Filtrar empleados por nombre
+            fetch(`/buscar_por_nombre?texto=${textoBusqueda}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Resultado de búsqueda:', data);
+                    const datosEmpleadosDiv = document.getElementById('datosEmpleados');
+                    datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
+
+                    data.forEach(empleado => {
+                        const empleadoElement = document.createElement('div');
+                        empleadoElement.innerHTML = `
+                        <div class="pix-registro">
+        <div class="pix-registro-imagen">
+            <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
+        </div>
+                                <div class="pix-registro-contenido">
+                                    <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
+                                        <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
+                                    </a>
+                                    <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
+                                </div>
+                                
+                                <div class="pix-registro-acciones">
+                                    <div>
+                                        <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        datosEmpleadosDiv.appendChild(empleadoElement);
+                    });
+                })
+                .catch(error => console.error('Error al buscar empleados por nombre:', error));
         }
 
-        // Llamar a la función para obtener datos de empleados cuando se cargue la página
+        // Llamar a la función obtenerDatosEmpleados al cargar la página
         window.onload = obtenerDatosEmpleados;
     </script>
 </body>
