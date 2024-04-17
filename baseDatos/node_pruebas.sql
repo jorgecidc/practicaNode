@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `node_pruebas`
+-- Base de datos: `bd_pruebanode`
 --
 
 -- --------------------------------------------------------
@@ -27,9 +27,9 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `empleado`
 --
 
-CREATE DATABASE node_pruebas;
+CREATE DATABASE bd_pruebanode;
 
-USE node_pruebas;
+USE bd_pruebanode;
 
 DROP TABLE IF EXISTS `empleado`;
 

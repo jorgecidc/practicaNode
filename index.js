@@ -7,11 +7,11 @@ const formidable = require("formidable");
 
 // Configuración de la conexión a la base de datos
 const connection = mysql.createConnection({
-  host: "localhost",
+  host: "82.223.123.233",
   port: 3306,
-  user: "root",
-  password: "",
-  database: "NODE_PRUEBAS",
+  user: "user_pruebanode",
+  password: "O@3zk8s95",
+  database: "bd_pruebanode",
 });
 
 // Conexión a la base de datos
