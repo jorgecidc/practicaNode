@@ -43,52 +43,54 @@
     <a href="formularioVacio.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
 
     <script>
-        // Manejar la solicitud de datos de empleados
-        function obtenerDatosEmpleados() {
-            // Realizar una solicitud AJAX al servidor para obtener los datos de los empleados
-            fetch('/datos_empleados')
-                .then(response => response.json()) // Convertir la respuesta a formato JSON
-                .then(data => {
-                    console.log('Datos de empleados:', data); // Mostrar los datos en la consola
+        // Función para renderizar los datos de los empleados
+        function renderizarEmpleados(data) {
+            const datosEmpleadosDiv = document.getElementById('datosEmpleados');
+            datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
 
-                    // Actualizar el DOM con los datos de los empleados
-                    const datosEmpleadosDiv = document.getElementById('datosEmpleados');
-                    datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
-
-                    // Iterar sobre los datos de los empleados y agregarlos al DOM
-                    data.forEach(empleado => {
-                        const empleadoElement = document.createElement('div');
-                        empleadoElement.innerHTML = `
-                            <div class="pix-registro">
-                                <div class="pix-registro-imagen">
-                                    <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                                </div>
-                                <div class="pix-registro-contenido">
-                                    <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
-                                        <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
-                                    </a>
-                                    <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
-                                </div>
-                                
-                                <div class="pix-registro-acciones">
-                                    <div>
-                                        <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
-                                    </div>
-                                </div>
+            // Iterar sobre los datos de los empleados y agregarlos al DOM
+            data.forEach(empleado => {
+                const empleadoElement = document.createElement('div');
+                empleadoElement.innerHTML = `
+                    <div class="pix-registro">
+                        <div class="pix-registro-imagen">
+                            <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
+                        </div>
+                        <div class="pix-registro-contenido">
+                            <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
+                                <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
+                            </a>
+                            <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
+                        </div>
+                        
+                        <div class="pix-registro-acciones">
+                            <div>
+                                <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
                             </div>
-                        `;
-                        datosEmpleadosDiv.appendChild(empleadoElement);
-                    });
-                    
-                    // Agregar evento click a los botones de menú desplegable
-                    const botonesMenu = document.querySelectorAll('.pix-mini-menu');
-                    botonesMenu.forEach(btn => {
-                        btn.addEventListener('click', function(event) {
-                            event.preventDefault();
-                            const menu = this;
-                            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-                        });
-                    });
+                        </div>
+                    </div>
+                `;
+                datosEmpleadosDiv.appendChild(empleadoElement);
+            });
+            
+            // Agregar evento click a los botones de menú desplegable
+            const botonesMenu = document.querySelectorAll('.pix-mini-menu');
+            botonesMenu.forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const menu = this;
+                    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+                });
+            });
+        }
+
+        // Función para obtener los datos de los empleados y llamar a la función de renderizado
+        function obtenerDatosEmpleados() {
+            fetch('/datos_empleados')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Datos de empleados:', data);
+                    renderizarEmpleados(data);
                 })
                 .catch(error => console.error('Error al obtener datos de empleados:', error));
         }
@@ -107,7 +109,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id: idEmpleado }) // Envía el ID del empleado en el cuerpo de la solicitud
+                    body: JSON.stringify({ id: idEmpleado })
                 })
                 .then(response => {
                     if (response.ok) {
@@ -125,46 +127,20 @@
         }
 
         // Función para buscar por nombre
-            function buscarPorNombre() {
+        function buscarPorNombre() {
             const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
             if (textoBusqueda === '') {
-                obtenerDatosEmpleados(); // Si no se ingresa texto, mostrar todos los empleados
+                obtenerDatosEmpleados();
             } else {
-                fetch('/datos_empleados') // Realizar una solicitud AJAX al servidor para obtener los datos de los empleados
-                    .then(response => response.json()) // Convertir la respuesta a formato JSON
+                fetch('/datos_empleados')
+                    .then(response => response.json())
                     .then(data => {
                         const empleadosFiltrados = data.filter(empleado => {
                             const nombreCompleto = `${empleado.NOMBRE.toLowerCase()} ${empleado.APELLIDO.toLowerCase()}`;
                             return nombreCompleto.includes(textoBusqueda);
                         });
 
-                        // Mostrar solo los empleados que coinciden con la búsqueda
-                        const datosEmpleadosDiv = document.getElementById('datosEmpleados');
-                        datosEmpleadosDiv.innerHTML = '';
-                        empleadosFiltrados.forEach(empleado => {
-                            const empleadoElement = document.createElement('div');
-                            empleadoElement.innerHTML = `
-                                <div class="pix-registro">
-                                    <div class="pix-registro-imagen">
-                        <a href="/pix-admin/proyectos/ficha.aspx?id=1&amp;ReturnUrl=%2fpix-admin%2fproyectos%2fdefault.aspx" id="CPH_Cuerpo_pixResultados_rptResultados_btnImagenRegistro_0"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                    </div>
-                                    <div class="pix-registro-contenido">
-                                        <a href="formulario.html?id=${empleado.ID}&nombre=${encodeURIComponent(empleado.NOMBRE)}&apellido=${encodeURIComponent(empleado.APELLIDO)}&email=${encodeURIComponent(empleado.EMAIL)}&telefono=${encodeURIComponent(empleado.TELEFONO)}" class="enlaceEmpleado">
-                                            <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
-                                        </a>
-                                        <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
-                                    </div>
-                                    
-                                    <div class="pix-registro-acciones">
-                                        <div>
-                                            <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            `;
-                            datosEmpleadosDiv.appendChild(empleadoElement);
-                        });
+                        renderizarEmpleados(empleadosFiltrados);
                     })
                     .catch(error => console.error('Error al obtener datos de empleados:', error));
             }
@@ -174,5 +150,4 @@
         window.onload = obtenerDatosEmpleados;
     </script>
 </body>
-
 </html>
