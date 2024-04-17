@@ -33,32 +33,31 @@
                     <label for="nombre">Nombre</label>
                     <div class="pix-campo pix-relleno">
                         <input name="nombre" type="text" id="nombre" placeholder="Nombre" maxlength="200" required>
-                        <div class="pix-contador-caracteres">0/200</div>
+                        <div id="nombreContador" class="pix-contador-caracteres">0/200</div>
                     </div>
                 </div>
                 <div id="apellidoField" class="pc-12 tb-12 mv-12">
                     <label for="apellido">Apellidos</label>
                     <div class="pix-campo pix-relleno">
                         <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
-                        <div class="pix-contador-caracteres">0/200</div>
+                        <div id="apellidoContador" class="pix-contador-caracteres">0/200</div>
                     </div>
                 </div>
                 <div id="emailField" class="pc-12 tb-12 mv-12">
                     <label for="email">Email</label>
                     <div class="pix-campo pix-relleno">
                         <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
-                        <div class="pix-contador-caracteres">0/200</div>
+                        <div id="emailContador" class="pix-contador-caracteres">0/200</div>
                     </div>
                 </div>
                 <div id="telefonoField" class="pc-12 tb-12 mv-12">
                     <label for="telefono">Teléfono</label>
                     <div class="pix-campo pix-relleno">
                         <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
-                        <div class="pix-contador-caracteres">0/200</div>
+                        <div id="telefonoContador" class="pix-contador-caracteres">0/200</div>
                     </div>
                 </div>
                 <div class="pc-12 tb-12 mv-12">
-
                     <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
                 </div>
             </div>
@@ -82,6 +81,8 @@
                     document.getElementById('apellido').value = empleado[0].APELLIDO;
                     document.getElementById('email').value = empleado[0].EMAIL;
                     document.getElementById('telefono').value = empleado[0].TELEFONO;
+                    // Actualizar contadores de caracteres
+                    actualizarContadores();
                 })
                 .catch(error => console.error('Error al obtener datos del empleado:', error));
         }
@@ -95,11 +96,21 @@
             }
         }
 
+        // Función para actualizar los contadores de caracteres
+        function actualizarContadores() {
+            const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
+            campos.forEach(input => {
+                const contador = input.nextElementSibling;
+                contador.textContent = `${input.value.length}/200`;
+            });
+        }
+
         // Llamar a la función para prellenar el formulario cuando se cargue la página
         window.onload = prellenarFormulario;
 
         // Manejar el envío del formulario
-        document.getElementById('btnGuardar').addEventListener('click', function() {
+        document.getElementById('btnGuardar').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío del formulario para poder validar
             const id = obtenerParametroURL('id'); // Obtener el ID del empleado
             const nombre = document.getElementById('nombre').value;
             const apellido = document.getElementById('apellido').value;
@@ -114,26 +125,35 @@
 
             // Enviar la solicitud al servidor con los datos del empleado
             fetch('/guardar-empleado', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id, nombre, apellido, email, telefono })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Empleado guardado correctamente');
-                        // Redireccionar al usuario a la página principal (index.html)
-                        window.location.href = '/index.html';
-                    } else {
-                        console.error('Error al guardar empleado');
-                        alert('Error al guardar empleado');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al enviar la solicitud:', error);
-                    alert('Error al enviar la solicitud');
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id, nombre, apellido, email, telefono })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Empleado guardado correctamente');
+                    // Redireccionar al usuario a la página principal (index.html)
+                    window.location.href = '/index.html';
+                } else {
+                    console.error('Error al guardar empleado');
+                    alert('Error al guardar empleado');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+                alert('Error al enviar la solicitud');
+            });
+        });
+
+        // Agregar eventos de entrada a cada campo para actualizar los contadores
+        const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
+        campos.forEach(input => {
+            input.addEventListener('input', () => {
+                const contador = input.nextElementSibling;
+                contador.textContent = `${input.value.length}/200`;
+            });
         });
     </script>
 </body>
