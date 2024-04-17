@@ -59,6 +59,12 @@
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
+                            <div id="imagenField" class="pc-12 tb-12 mv-12">
+                                <label for="imagen">Imagen</label>
+                                <div class="pix-campo pix-relleno">
+                                    <input name="imagen" type="file" id="imagen" accept="image/*">
+                                </div>
+                            </div>
                             <div class="pc-12 tb-12 mv-12">
 
                                 <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
@@ -102,18 +108,27 @@
             const email = document.getElementById('email').value;
             const telefono = document.getElementById('telefono').value;
 
+            // Obtener el nombre de la imagen seleccionada
+            const imagen = document.getElementById('imagen').files[0].name;
+
             // Validar que los campos no estén vacíos
             if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
                 alert('Por favor completa todos los campos');
                 return;
             }
 
+            // Crear un objeto FormData para enviar los datos del formulario, incluyendo la imagen
+            const formData = new FormData();
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('email', email);
+            formData.append('telefono', telefono);
+            formData.append('imagen', document.getElementById('imagen').files[0]);
+
+            // Enviar la solicitud al servidor usando fetch
             fetch('/guardar-empleado', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ nombre, apellido, email, telefono })
+                body: formData
             })
                 .then(response => {
                     if (response.ok) {
