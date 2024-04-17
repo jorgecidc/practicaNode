@@ -2,23 +2,67 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Empleado</title>
+    <title>Prueba Node</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
+    <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet" />
+    <link href="/pix-admin/css/custom.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
+    <meta name="msapplication-TileColor" content="#112233" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 
 <body>
-    <h1>Editar Empleado</h1>
     <form id="formularioEmpleado">
-        <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre"><br>
-        <label for="apellido">Apellido:</label><br>
-        <input type="text" id="apellido" name="apellido"><br>
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email"><br>
-        <label for="telefono">Teléfono:</label><br>
-        <input type="tel" id="telefono" name="telefono"><br><br>
-        <button type="button" id="btnGuardar">Guardar</button>
+        <div class="pix-tarjeta-titulo">
+            <i class="fas fa-folder-tree"></i>Formulario
+        </div>
+        <div class="pix-grid pad-8">
+            <div class="pix-fila">
+                <div id="nombreField" class="pc-12 tb-12 mv-12">
+                    <label for="nombre">Nombre</label>
+                    <div class="pix-campo pix-relleno">
+                        <input name="nombre" type="text" id="nombre" placeholder="Nombre" maxlength="200" required>
+                        <div class="pix-contador-caracteres">0/200</div>
+                    </div>
+                </div>
+                <div id="apellidoField" class="pc-12 tb-12 mv-12">
+                    <label for="apellido">Apellidos</label>
+                    <div class="pix-campo pix-relleno">
+                        <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
+                        <div class="pix-contador-caracteres">0/200</div>
+                    </div>
+                </div>
+                <div id="emailField" class="pc-12 tb-12 mv-12">
+                    <label for="email">Email</label>
+                    <div class="pix-campo pix-relleno">
+                        <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
+                        <div class="pix-contador-caracteres">0/200</div>
+                    </div>
+                </div>
+                <div id="telefonoField" class="pc-12 tb-12 mv-12">
+                    <label for="telefono">Teléfono</label>
+                    <div class="pix-campo pix-relleno">
+                        <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
+                        <div class="pix-contador-caracteres">0/200</div>
+                    </div>
+                </div>
+                <div class="pc-12 tb-12 mv-12">
+
+                    <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
+                </div>
+            </div>
+        </div>
     </form>
 
     <script>
