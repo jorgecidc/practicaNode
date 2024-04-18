@@ -25,7 +25,7 @@
 <body>
     <header>
             
-        <div><a class="btn-header btn-header-volver" href="http://localhost:3000/index.html" data-pix-toltip="Volver"><i class="far fa-arrow-left"></i></a></div>
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i class="far fa-arrow-left"></i></a></div>
         <div>
             <a class="pix-menu pix-menu--spring pix-boton-oculto">
                 <span class="pix-menu-box">
@@ -85,6 +85,10 @@
     </form>
 
     <script>
+        function goBack() {
+            window.location.href = "/index.html"; // Redirigir siempre al index.html
+        }
+    
         // Función para obtener los parámetros de la URL
         function obtenerParametroURL(nombre) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -174,6 +178,13 @@
                 const contador = input.nextElementSibling;
                 contador.textContent = `${input.value.length}/200`;
             });
+        });
+
+        // Recargar la página cuando se muestre después de volver atrás
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                location.reload();
+            }
         });
     </script>
     
