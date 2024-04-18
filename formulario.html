@@ -43,7 +43,7 @@
             </div>
         </div>
     </header>
-    <form id="formularioEmpleado">
+    <form id="formularioEmpleado" enctype="multipart/form-data">
         <div class="pix-tarjeta-titulo">
             <i class="fas fa-folder-tree"></i>Formulario
         </div>
@@ -78,6 +78,8 @@
                     </div>
                 </div>
                 <div class="pc-12 tb-12 mv-12">
+                    <label for="imagen">Imagen</label>
+                    <input type="file" id="imagen" name="imagen">
                     <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
                 </div>
             </div>
@@ -93,22 +95,6 @@
         function obtenerParametroURL(nombre) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(nombre);
-        }
-    
-        // Función para obtener los datos del empleado con el ID proporcionado
-        function obtenerDatosEmpleadoPorID(id) {
-            fetch(`/datos_empleado?id=${id}`)
-                .then(response => response.json())
-                .then(empleado => {
-                    // Rellenar el formulario con los datos del empleado
-                    document.getElementById('nombre').value = empleado[0].NOMBRE;
-                    document.getElementById('apellido').value = empleado[0].APELLIDO;
-                    document.getElementById('email').value = empleado[0].EMAIL;
-                    document.getElementById('telefono').value = empleado[0].TELEFONO;
-                    // Actualizar contadores de caracteres
-                    actualizarContadores();
-                })
-                .catch(error => console.error('Error al obtener datos del empleado:', error));
         }
     
         // Función para prellenar el formulario con los datos del empleado
@@ -134,60 +120,32 @@
     
         // Manejar el envío del formulario
         document.getElementById('formularioEmpleado').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evitar el envío del formulario para poder validar
-            const id = obtenerParametroURL('id'); // Obtener el ID del empleado
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const email = document.getElementById('email').value;
-            const telefono = document.getElementById('telefono').value;
+            event.preventDefault(); // Evitar que se envíe el formulario automáticamente
     
-            // Validar que los campos no estén vacíos
-            if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
-                alert('Por favor completa todos los campos');
-                return;
-            }
+            const formData = new FormData(this);
     
-            // Enviar la solicitud al servidor con los datos del empleado
-            fetch('/actualizar-empleado', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id, nombre, apellido, email, telefono })
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Empleado guardado correctamente');
-                    // Recargar la página actual para reflejar los cambios
-                    location.reload();
-                } else {
-                    console.error('Error al guardar empleado');
-                    alert('Error al guardar empleado');
-                }
-            })
-            .catch(error => {
-                console.error('Error al enviar la solicitud:', error);
-                alert('Error al enviar la solicitud');
-            });
+            // Enviar la solicitud al servidor
+            fetch('/guardar-empleado', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    // Redirigir a la página de inicio después de guardar el empleado
+                    window.location.href = "/index.html";
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     
-        // Agregar eventos de entrada a cada campo para actualizar los contadores
-        const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
-        campos.forEach(input => {
-            input.addEventListener('input', () => {
-                const contador = input.nextElementSibling;
-                contador.textContent = `${input.value.length}/200`;
-            });
-        });
-
-        // Recargar la página cuando se muestre después de volver atrás
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                location.reload();
-            }
+        // Actualizar los contadores de caracteres cuando se escriba en los campos de texto
+        const camposTexto = document.querySelectorAll('input[type="text"], input[type="email"]');
+        camposTexto.forEach(input => {
+            input.addEventListener('input', actualizarContadores);
         });
     </script>
-    
 </body>
 
 </html>
