@@ -178,40 +178,72 @@ const server = http.createServer((req, res) => {
         );
       }
     });
-  } else if (pathname === "/actualizar-empleado" && req.method === "POST") {
+  }   else if (pathname === "/actualizar-empleado" && req.method === "POST") {
     console.log("Solicitud para actualizar empleado recibida");
-
-    let requestBody = "";
-    req.on("data", (chunk) => {
-      requestBody += chunk.toString();
-    });
-
-    req.on("end", () => {
-      const { id, nombre, apellido, email, telefono } = JSON.parse(requestBody);
-
-      connection.query(
-        "UPDATE empleado SET NOMBRE=?, APELLIDO=?, EMAIL=?, TELEFONO=? WHERE ID=?",
-        [nombre, apellido, email, telefono, id],
-        (error, results) => {
-          if (error) {
-            console.error(
-              "Error al actualizar empleado en la base de datos:",
-              error
-            );
+    upload.single("imagen")(req, res, (err) => {
+        if (err) {
+            console.error("Error al cargar la imagen:", err);
             res.writeHead(500);
-            res.end("Error al actualizar empleado en la base de datos");
+            res.end("Error al cargar la imagen");
             return;
-          }
-
-          console.log(
-            "Empleado actualizado correctamente en la base de datos"
-          );
-          res.writeHead(200);
-          res.end("Empleado actualizado correctamente en la base de datos");
         }
-      );
+
+        try {
+            const { id, nombre, apellido, email, telefono } = req.body;
+            let imagen;
+
+            // Consulta la base de datos para obtener la imagen actual del empleado
+            connection.query(
+              "SELECT IMG FROM empleado WHERE ID = ?",
+              [id],
+              (error, results) => {
+                if (error) {
+                  console.error("Error al obtener la imagen del empleado:", error);
+                  res.writeHead(500);
+                  res.end("Error al obtener la imagen del empleado");
+                  return;
+                }
+
+                // Si no se carga una nueva imagen, utiliza la imagen actual
+                imagen = req.file ? req.file.filename : results[0].IMG;
+
+                // Imprimir los datos que se van a actualizar
+                console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen });
+
+                // Actualiza el empleado en la base de datos
+                connection.query(
+                  'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? WHERE ID = ?',
+                  [nombre, apellido, email, telefono, imagen, id],
+                  (error, results) => {
+                    if (error) {
+                      console.error(
+                        "Error al actualizar empleado en la base de datos:",
+                        error
+                      );
+                      res.writeHead(500);
+                      res.end("Error al actualizar empleado en la base de datos");
+                      return;
+                    }
+
+                    console.log(
+                      "Empleado actualizado correctamente en la base de datos"
+                    );
+                    res.writeHead(200);
+                    res.end("Empleado actualizado correctamente en la base de datos");
+                  }
+                );
+              }
+            );
+        } catch (error) {
+            console.error("Error al procesar la solicitud:", error);
+            res.writeHead(400);
+            res.end("Error al procesar la solicitud");
+        }
     });
-  } else {
+}
+
+
+   else {
     let filePath = "." + pathname;
     if (filePath === "./") {
       filePath = "./index.html";
