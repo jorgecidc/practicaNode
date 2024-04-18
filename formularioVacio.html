@@ -60,7 +60,8 @@
                                 </div>
                             </div>
                             <div class="pc-12 tb-12 mv-12">
-
+                                <label for="imagen">Imagen</label>
+                                <input type="file" id="imagen" name="imagen">
                                 <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
                             </div>
                         </div>
@@ -108,12 +109,17 @@
                 return;
             }
 
+            const formData = new FormData();
+            const imagen = document.getElementById('imagen').files[0]; // Obtener el archivo de imagen seleccionado
+            formData.append('imagen', imagen);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('email', email);
+            formData.append('telefono', telefono);
+
             fetch('/guardar-empleado', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ nombre, apellido, email, telefono })
+                body: formData
             })
                 .then(response => {
                     if (response.ok) {
