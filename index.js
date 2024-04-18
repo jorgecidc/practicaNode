@@ -178,6 +178,39 @@ const server = http.createServer((req, res) => {
         );
       }
     });
+  } else if (pathname === "/actualizar-empleado" && req.method === "POST") {
+    console.log("Solicitud para actualizar empleado recibida");
+
+    let requestBody = "";
+    req.on("data", (chunk) => {
+      requestBody += chunk.toString();
+    });
+
+    req.on("end", () => {
+      const { id, nombre, apellido, email, telefono } = JSON.parse(requestBody);
+
+      connection.query(
+        "UPDATE empleado SET NOMBRE=?, APELLIDO=?, EMAIL=?, TELEFONO=? WHERE ID=?",
+        [nombre, apellido, email, telefono, id],
+        (error, results) => {
+          if (error) {
+            console.error(
+              "Error al actualizar empleado en la base de datos:",
+              error
+            );
+            res.writeHead(500);
+            res.end("Error al actualizar empleado en la base de datos");
+            return;
+          }
+
+          console.log(
+            "Empleado actualizado correctamente en la base de datos"
+          );
+          res.writeHead(200);
+          res.end("Empleado actualizado correctamente en la base de datos");
+        }
+      );
+    });
   } else {
     let filePath = "." + pathname;
     if (filePath === "./") {
@@ -187,8 +220,8 @@ const server = http.createServer((req, res) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
         console.error("Error al leer el archivo:", err);
-        res.writeHead(500);
-        res.end("Error interno del servidor");
+        res.writeHead(404); // Cambio el código de estado a 404 para indicar que el archivo no se encontró
+        res.end("Archivo no encontrado");
         return;
       }
 
