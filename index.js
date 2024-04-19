@@ -123,7 +123,7 @@ const server = http.createServer((req, res) => {
       res.writeHead(400);
       res.end("ID de empleado no proporcionado");
     }
-  } else if (pathname === "/guardar-empleado" && req.method === "POST") {
+  } else if (pathname === "/guardar-empleado") {
     console.log("Solicitud para guardar empleado recibida");
 
     upload.single("imagen")(req, res, (err) => {
@@ -137,7 +137,7 @@ const server = http.createServer((req, res) => {
       const { id, nombre, apellido, email, telefono } = req.body;
       let imagen = req.file ? req.file.filename : null;
 
-      if (id) {
+      if (id== "hola") {
         // Si hay un ID, actualiza el empleado en la base de datos
         connection.query(
           "UPDATE empleado SET NOMBRE=?, APELLIDO=?, EMAIL=?, TELEFONO=?, IMG=? WHERE ID=?",
@@ -154,11 +154,11 @@ const server = http.createServer((req, res) => {
             }
 
             console.log(
-              "Empleado actualizado correctamente en la base de datos"
+              "holaaaaaa"
             );
             res.writeHead(200);
             res.end(
-              "Empleado actualizado correctamente en la base de datos"
+              "holaaaaa"
             );
           }
         );

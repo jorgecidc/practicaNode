@@ -69,7 +69,6 @@
 
 <body>
     <header>
-            
         <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i class="far fa-arrow-left"></i></a></div>
         <div>
             <a class="pix-menu pix-menu--spring pix-boton-oculto">
@@ -78,8 +77,6 @@
                 </span>
             </a>
         </div>
-        
-
         <div>
             <a id="btnPixContextual" class="btn-header pix-btn-mini-menu" href="#"><i class="far fa-ellipsis-v"></i></a>
             <div class="pix-mini-menu">
@@ -88,53 +85,52 @@
             </div>
         </div>
     </header>
-    <form id="formularioEmpleado" enctype="multipart/form-data">
+    <form id="formularioEmpleado" enctype="multipart/form-data" action="">
         <div class="pix-tarjeta-titulo">
             <i class="fas fa-folder-tree"></i>Formulario
         </div>
         <div class="pix-grid pad-8">
-            <div class="pix-fila">               
-                    <div class="pc-12 tb-12 mv-12">
-                        <img id="fotoEmpleado" src="#" alt="Foto del empleado" style="max-width: 100%; max-height: 300px;">
-                    </div>
-                </div>
-                <div id="nombreField" class="pc-12 tb-12 mv-12">
-                    <div class="pix-campo">
-                        <label for="nombre">Nombre</label>
-                        <input name="nombre" type="text" id="nombre">
-                        <div class="pix-contador-caracteres">0/200</div>
-                    </div>
-                </div>
-                <div id="apellidoField" class="pc-12 tb-12 mv-12">
-                    <label for="apellido">Apellidos</label>
-                    <div class="pix-campo pix-relleno">
-                        <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
-                        <div id="apellidoContador" class="pix-contador-caracteres">0/200</div>
-                    </div>
-                </div>
-                <div id="emailField" class="pc-12 tb-12 mv-12">
-                    <label for="email">Email</label>
-                    <div class="pix-campo pix-relleno">
-                        <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
-                        <div id="emailContador" class="pix-contador-caracteres">0/200</div>
-                    </div>
-                </div>
-                <div id="telefonoField" class="pc-12 tb-12 mv-12">
-                    <label for="telefono">Teléfono</label>
-                    <div class="pix-campo pix-relleno">
-                        <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
-                        <div id="telefonoContador" class="pix-contador-caracteres">0/200</div>
-                    </div>
-                </div>
-                <div id="imagenField" class="pc-12 tb-12 mv-12">
-                    <label for="imagen">Imagen</label>
-                    <div class="pix-campo pix-relleno">
-                        <input name="imagen" type="file" id="imagen" accept="image/*">
-                    </div>
-                </div>
+            <div class="pix-fila">
                 <div class="pc-12 tb-12 mv-12">
-                    <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
+                    <img id="fotoEmpleado" src="#" alt="Foto del empleado" style="max-width: 100%; max-height: 300px;">
                 </div>
+            </div>
+            <div id="nombreField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="nombre">Nombre</label>
+                    <input name="nombre" type="text" id="nombre">
+                    <div class="pix-contador-caracteres">0/200</div>
+                </div>
+            </div>
+            <div id="apellidoField" class="pc-12 tb-12 mv-12">
+                <label for="apellido">Apellidos</label>
+                <div class="pix-campo pix-relleno">
+                    <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
+                    <div id="apellidoContador" class="pix-contador-caracteres">0/200</div>
+                </div>
+            </div>
+            <div id="emailField" class="pc-12 tb-12 mv-12">
+                <label for="email">Email</label>
+                <div class="pix-campo pix-relleno">
+                    <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
+                    <div id="emailContador" class="pix-contador-caracteres">0/200</div>
+                </div>
+            </div>
+            <div id="telefonoField" class="pc-12 tb-12 mv-12">
+                <label for="telefono">Teléfono</label>
+                <div class="pix-campo pix-relleno">
+                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
+                    <div id="telefonoContador" class="pix-contador-caracteres">0/200</div>
+                </div>
+            </div>
+            <div id="imagenField" class="pc-12 tb-12 mv-12">
+                <label for="imagen">Imagen</label>
+                <div class="pix-campo pix-relleno">
+                    <input name="imagen" type="file" id="imagen" accept="image/*">
+                </div>
+            </div>
+            <div class="pc-12 tb-12 mv-12">
+                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
             </div>
         </div>
     </form>
@@ -143,13 +139,13 @@
         function goBack() {
             window.location.href = "/index.html"; // Redirigir siempre al index.html
         }
-    
+
         // Función para obtener los parámetros de la URL
         function obtenerParametroURL(nombre) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(nombre);
         }
-    
+
         // Función para obtener los datos del empleado con el ID proporcionado
         function obtenerDatosEmpleadoPorID(id) {
             fetch(`/datos_empleado?id=${id}`)
@@ -166,16 +162,20 @@
                 })
                 .catch(error => console.error('Error al obtener datos del empleado:', error));
         }
-    
+
         // Función para prellenar el formulario con los datos del empleado
         function prellenarFormulario() {
             // Obtener el ID del empleado de la URL
             const idEmpleado = obtenerParametroURL('id');
             if (idEmpleado) {
                 obtenerDatosEmpleadoPorID(idEmpleado);
+            } else {
+                // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
+                document.getElementById('formularioEmpleado').reset();
+                document.getElementById('formularioEmpleado').action = '/guardar-empleado';
             }
         }
-    
+
         // Función para actualizar los contadores de caracteres
         function actualizarContadores() {
             const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
@@ -184,10 +184,10 @@
                 contador.textContent = `${input.value.length}/200`;
             });
         }
-    
+
         // Llamar a la función para prellenar el formulario cuando se cargue la página
         window.onload = prellenarFormulario;
-    
+
         // Manejar el envío del formulario
         document.getElementById('formularioEmpleado').addEventListener('submit', function(event) {
             event.preventDefault(); // Evitar el envío del formulario para poder validar
@@ -205,25 +205,25 @@
             formData.append('email', email);
             formData.append('telefono', telefono);
             formData.append('imagen', imagen);
-                
-        
+
+
             // Validar que los campos no estén vacíos
             if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
                 alert('Por favor completa todos los campos');
                 return;
             }
-        
+
             // Determinar la URL de acción del formulario
             let actionURL = '/actualizar-empleado';
-            if (!id) {
+            if (id == null) {
                 actionURL = '/guardar-empleado';
             }
-        
+
             // Enviar la solicitud al servidor con los datos del empleado
             fetch(actionURL, {
-                method: 'POST',
-                body: formData
-            })
+                    method: 'POST',
+                    body: formData
+                })
                 .then(response => {
                     if (response.ok) {
                         console.log('Empleado guardado correctamente');
@@ -239,7 +239,7 @@
                     alert('Error al enviar la solicitud');
                 });
         });
-    
+
         // Agregar eventos de entrada a cada campo para actualizar los contadores
         const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
         campos.forEach(input => {
@@ -256,7 +256,7 @@
             }
         });
     </script>
-    
+
 </body>
 
 </html>
