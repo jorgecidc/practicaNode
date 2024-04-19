@@ -19,6 +19,52 @@
     <meta name="msapplication-TileColor" content="#112233" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
+    <style>
+        .pix-campo {
+            position: relative;
+        }
+
+        .pix-campo input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .pix-campo input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .pix-campo input:focus::placeholder,
+        .pix-campo input:not(:placeholder-shown)::placeholder {
+            color: transparent;
+        }
+
+        .pix-campo input:focus + label,
+        .pix-campo input:valid + label {
+            top: -10px;
+            font-size: 12px;
+            color: #007bff;
+        }
+
+        .pix-campo label {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            font-size: 16px;
+            color: #999;
+            transition: top 0.3s ease-in-out, font-size 0.3s ease-in-out, color 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        .pix-campo input:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 12px;
+            color: #000;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,37 +77,36 @@
                     </div>
                     <div class="pix-grid pad-8">
                         <div class="pix-fila">
+                            <div class="pix-upload cargado" data-ancho-img="200" data-alto-img="200"><input name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctl02 imagen" type="file" id="imagen" accept="image/*" title="Ningún archivo seleccionado"><input name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctlURL_IMAGEN" type="hidden" id="CPH_Cuerpo_rptCampos_ctlURL_IMAGEN_1" data-url-base-imagenes="https://oficinavirtual.pixelinnova.com" data-modo-corte-imageresizer="crop" data-modo-escala-imageresizer=""><label>Ningún archivo seleccionado</label></div>
                             <div id="nombreField" class="pc-12 tb-12 mv-12">
-                                <label for="nombre">Nombre</label>
                                 <div class="pix-campo pix-relleno">
-                                    <input name="nombre" type="text" id="nombre" placeholder="Nombre" maxlength="200" required>
+                                    <input name="nombre" type="text" id="nombre" placeholder="Nombre">
+                                    <label for="nombre">Nombre</label>
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div id="apellidoField" class="pc-12 tb-12 mv-12">
-                                <label for="apellido">Apellidos</label>
                                 <div class="pix-campo pix-relleno">
-                                    <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
+                                    <input name="apellido" type="text" id="apellido" placeholder="Apellidos">
+                                    <label for="apellido">Apellidos</label>
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div id="emailField" class="pc-12 tb-12 mv-12">
-                                <label for="email">Email</label>
                                 <div class="pix-campo pix-relleno">
-                                    <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
+                                    <input name="email" type="email" id="email" placeholder="Email">
+                                    <label for="email">Email</label>
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div id="telefonoField" class="pc-12 tb-12 mv-12">
-                                <label for="telefono">Teléfono</label>
                                 <div class="pix-campo pix-relleno">
-                                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
+                                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono">
+                                    <label for="telefono">Teléfono</label>
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div class="pc-12 tb-12 mv-12">
-                                <label for="imagen">Imagen</label>
-                                <input type="file" id="imagen" name="imagen">
                                 <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
                             </div>
                         </div>
