@@ -14,21 +14,21 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-/*const connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
   password: "",
   database: "NODE_PRUEBAS",
-});*/
+});
 
- const connection = mysql.createConnection({
+ /*const connection = mysql.createConnection({
   host: "82.223.123.233",
   port: 3306,
   user: "user_pruebanode",
   password: "O@3zk8s95",
   database: "bd_pruebanode",
- });
+ });*/
 
 
 connection.connect((err) => {

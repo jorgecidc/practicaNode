@@ -68,6 +68,26 @@
 </head>
 
 <body class="pix-form-cargado">
+    <header>
+            
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i class="far fa-arrow-left"></i></a></div>
+        <div>
+            <a class="pix-menu pix-menu--spring pix-boton-oculto">
+                <span class="pix-menu-box">
+                    <span class="pix-menu-inner"></span>
+                </span>
+            </a>
+        </div>
+        
+
+        <div>
+            <a id="btnPixContextual" class="btn-header pix-btn-mini-menu" href="#"><i class="far fa-ellipsis-v"></i></a>
+            <div class="pix-mini-menu">
+                <a href="/pix-admin/mi-cuenta"><i class="fas fa-user"></i>Mi cuenta</a>
+                <a href="/login.aspx?logout=1"><i class="fas fa-power-off"></i>Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
     <div class="pix-grid pad-8">
         <div class="pix-fila">
             <div class="pc-12 tb-12 mv-12">
@@ -86,23 +106,26 @@
                                 </div>
                             </div>
                             <div id="apellidoField" class="pc-12 tb-12 mv-12">
-                                <div class="pix-campo pix-relleno">
-                                    <input name="apellido" type="text" id="apellido" placeholder="Apellidos">
+                                <div class="pix-campo ">
                                     <label for="apellido">Apellidos</label>
+                                    <input name="apellido" type="text" id="apellido" >
+                                    
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div id="emailField" class="pc-12 tb-12 mv-12">
-                                <div class="pix-campo pix-relleno">
-                                    <input name="email" type="email" id="email" placeholder="Email">
+                                <div class="pix-campo ">
                                     <label for="email">Email</label>
+                                    <input name="email" type="email" id="email">
+                                    
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
                             <div id="telefonoField" class="pc-12 tb-12 mv-12">
                                 <div class="pix-campo pix-relleno">
-                                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono">
                                     <label for="telefono">Teléfono</label>
+                                    <input name="telefono" type="text" id="telefono">
+                                    
                                     <div class="pix-contador-caracteres">0/200</div>
                                 </div>
                             </div>
@@ -182,6 +205,8 @@
                 });
         });
     </script>
+   
+
 </body>
 
 </html>
