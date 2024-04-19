@@ -22,6 +22,15 @@ const connection = mysql.createConnection({
   database: "NODE_PRUEBAS",
 });
 
+// const connection = mysql.createConnection({
+//   host: "82.223.123.233",
+//   port: 3306,
+//   user: "user_pruebanode",
+//   password: "O@3zk8s95",
+//   database: "bd_pruebanode",
+// });
+
+
 connection.connect((err) => {
   if (err) {
     console.error("Error al conectar a la base de datos:", err.stack);
