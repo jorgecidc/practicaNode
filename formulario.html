@@ -21,10 +21,11 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
     <style>
-        form{
+        form {
             margin-left: 20px;
             margin-top: 20px;
         }
+
         .pix-campo {
             position: relative;
         }
@@ -69,6 +70,35 @@
             font-size: 12px;
             color: #000;
         }
+
+        .imagen-preview {
+    position: relative;
+    margin-bottom: 10px;
+    display: inline-block; /* Ajusta el contenedor a la imagen */
+}
+
+.eliminar-imagen {
+    position: absolute;
+    top: 0; /* Ajusta la posición vertical */
+    right: 0; /* Ajusta la posición horizontal */
+    background-color: red; /* Cambia el color de fondo a rojo */
+    color: white; /* Cambia el color del texto a blanco */
+    border-radius: 50%; /* Hace que el botón sea redondeado */
+    width: 25px; /* Tamaño del botón */
+    height: 25px; /* Tamaño del botón */
+    line-height: 25px; /* Centra el contenido verticalmente */
+    text-align: center; /* Centra el contenido horizontalmente */
+    cursor: pointer;
+    z-index: 1; /* Asegura que esté por encima de la imagen */
+}
+
+
+.imagen-preview img {
+    max-width: 100%;
+    max-height: 300px;
+    margin-bottom: 10px;
+}
+
     </style>
 </head>
 
@@ -98,18 +128,16 @@
         <div class="pix-grid pad-8">
             <div class="pix-fila">
                 <div class="pc-12 tb-12 mv-12">
-                    <img id="fotoEmpleado" src="#" alt="Foto del empleado" style="max-width: 100%; max-height: 300px;">
-                </div>
-            </div>
-            <div id="CPH_Cuerpo_rptCampos_pixDivCelda_1" class="pc-12 tb-12 mv-12 ">
-                <div class="pix-campo pix-label-fija"><label id="CPH_Cuerpo_rptCampos_miLabel_1">Imagen</label>
-                    <div class="pix-upload cargado" data-ancho-img="200" data-alto-img="200"><input
-                            name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctl02" id="imagen" type="file" accept="image/*"
-                            title="Ningún archivo seleccionado"><input
-                            name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctlURL_IMAGEN" type="hidden"
-                            id="CPH_Cuerpo_rptCampos_ctlURL_IMAGEN_1"
-                            data-url-base-imagenes="https://oficinavirtual.pixelinnova.com"
-                            data-modo-corte-imageresizer="crop" data-modo-escala-imageresizer=""></div>
+                    <div class="imagen-preview" id="imagenPreview">
+                        <div class="eliminar-imagen" id="eliminar-imagen" onclick="eliminarImagen()">X</div>
+                        <img id="fotoEmpleado" src="#" alt="Foto del empleado">
+                        <div id="imagenNombre" class="imagen-nombre"></div>
+                    </div>
+                    
+                    <div class="pix-campo cargado" id="adjuntarImagen" style="display: none;">
+                        <input name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctl02" id="imagen" type="file" accept="image/*" title="Ningún archivo seleccionado">
+                        <input name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctlURL_IMAGEN" type="hidden" id="CPH_Cuerpo_rptCampos_ctlURL_IMAGEN_1" data-url-base-imagenes="https://oficinavirtual.pixelinnova.com" data-modo-corte-imageresizer="crop" data-modo-escala-imageresizer="">
+                    </div>
                 </div>
             </div>
             <div id="nombreField" class="pc-12 tb-12 mv-12">
@@ -143,10 +171,9 @@
                     <div id="telefonoContador" class="pix-contador-caracteres">0/200</div>
                 </div>
             </div>
-            
+
             <div class="pc-12 tb-12 mv-12">
-                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar"
-                    class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
+                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
             </div>
         </div>
     </form>
@@ -173,27 +200,38 @@
                     document.getElementById('email').value = empleado[0].EMAIL;
                     document.getElementById('telefono').value = empleado[0].TELEFONO;
                     document.getElementById('fotoEmpleado').src = `./img/${empleado[0].IMG}`;
+                    document.getElementById('imagenNombre').textContent = `${empleado[0].IMG}`;
                     // Actualizar contadores de caracteres
                     actualizarContadores();
                 })
                 .catch(error => console.error('Error al obtener datos del empleado:', error));
         }
 
-        // Función para prellenar el formulario con los datos del empleado
-        function prellenarFormulario() {
-            // Obtener el ID del empleado de la URL
-            const idEmpleado = obtenerParametroURL('id');
-            if (idEmpleado) {
-                obtenerDatosEmpleadoPorID(idEmpleado);
-            } else {
-                // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
-                document.getElementById('formularioEmpleado').reset();
-                document.getElementById('formularioEmpleado').action = '/guardar-empleado';
+       // Función para prellenar el formulario con los datos del empleado
+function prellenarFormulario() {
+    // Obtener el ID del empleado de la URL
+    const idEmpleado = obtenerParametroURL('id');
+    if (idEmpleado) {
+        obtenerDatosEmpleadoPorID(idEmpleado);
+        // Ocultar la opción de adjuntar imagen cuando haya una imagen prerellenada
+        document.getElementById('adjuntarImagen').style.display = 'none';
+    } else {
+        // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
+        document.getElementById('formularioEmpleado').reset();
+        document.getElementById('formularioEmpleado').action = '/guardar-empleado';
 
-                // Ocultar la imagen si el ID es nulo
-                document.getElementById('fotoEmpleado').style.display = 'none';
-            }
+        // Ocultar la imagen si el ID es nulo
+        document.getElementById('fotoEmpleado').style.display = 'none';
+
+        // Verificar si los campos del formulario están vacíos
+        const camposVacios = Array.from(document.querySelectorAll('input[type="text"], input[type="email"]')).some(input => input.value.trim() === '');
+        if (camposVacios) {
+            // Mostrar el campo de adjuntar imagen si los campos están vacíos
+            document.getElementById('adjuntarImagen').style.display = 'block';
+            document.getElementById('eliminar-imagen').style.display = 'none';
         }
+    }
+}
 
         // Función para actualizar los contadores de caracteres
         function actualizarContadores() {
@@ -216,22 +254,49 @@
             });
         });
 
-        // Manejar cambio en la selección de archivo de imagen
-        document.getElementById('imagen').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Mostrar previsualización de la imagen
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('fotoEmpleado').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-                
-                // Ocultar la imagen si no hay archivo seleccionado
-            } else {
-                document.getElementById('fotoEmpleado').style.display = 'none';
-            }
-        });
+    // Manejar cambio en la selección de archivo de imagen
+document.getElementById('imagen').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Mostrar previsualización de la imagen
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('fotoEmpleado').src = e.target.result;
+            document.getElementById('imagenPreview').style.display = 'inline-block';
+            // Mostrar el nombre del archivo
+            document.getElementById('imagenNombre').textContent = file.name;
+            // Cambiar la visualización de fotoEmpleado de none a block
+            document.getElementById('fotoEmpleado').style.display = 'block';
+            // Ocultar el campo de adjuntar imagen al seleccionar una nueva imagen
+            document.getElementById('adjuntarImagen').style.display = 'none';
+            document.getElementById('eliminar-imagen').style.display= 'inline-block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // Limpiar la previsualización si no se selecciona ningún archivo
+        document.getElementById('fotoEmpleado').src = '';
+        document.getElementById('imagenNombre').textContent = '';
+        document.getElementById('imagenPreview').style.display = 'none';
+        // Ocultar el campo de adjuntar imagen si no se adjunta ningún archivo
+        document.getElementById('adjuntarImagen').style.display = 'block';
+        // Cambiar la visualización de fotoEmpleado de block a none
+        document.getElementById('fotoEmpleado').style.display = 'none';
+        document.getElementsByClassName('eliminar-imagen').style.display='none';
+    }
+});
+
+
+
+
+
+
+        // Función para eliminar la imagen y mostrar nuevamente el campo de adjuntar imagen
+        function eliminarImagen() {
+    document.getElementById('fotoEmpleado').src = '';
+    document.getElementById('imagen').value = '';
+    document.getElementById('imagenPreview').style.display = 'none';
+    document.getElementById('adjuntarImagen').style.display = 'block'; // Mostrar el campo de adjuntar imagen
+}
 
         // Manejar el envío del formulario
         document.getElementById('formularioEmpleado').addEventListener('submit', function (event) {
@@ -243,47 +308,81 @@
             const telefono = document.getElementById('telefono').value;
             const imagen = document.getElementById('imagen').files[0];
 
-            // Validar que los campos no estén vacíos
-            if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
-                alert('Por favor completa todos los campos');
-                return;
-            }
+            // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
+            if (imagen && id) {
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('nombre', nombre);
+                formData.append('apellido', apellido);
+                formData.append('email', email);
+                formData.append('telefono', telefono);
+                formData.append('imagen', imagen);
 
-            const formData = new FormData();
-            formData.append('id', id);
-            formData.append('nombre', nombre);
-            formData.append('apellido', apellido);
-            formData.append('email', email);
-            formData.append('telefono', telefono);
-            formData.append('imagen', imagen);
+                // Enviar la solicitud al servidor con los datos del empleado para actualizar
+                fetch('/actualizar-empleado', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Empleado guardado correctamente');
+                            mostrarSnackbar('Datos guardados correctamente', '');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 4000);
+                        } else {
+                            console.error('Error al actualizar empleado');
+                            alert('Error al actualizar empleado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al enviar la solicitud:', error);
+                        alert('Error al enviar la solicitud');
+                    });
+            } else {
+                // Si no se ha adjuntado un archivo o no hay un ID de empleado presente, continuar con el comportamiento normal del formulario
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('nombre', nombre);
+                formData.append('apellido', apellido);
+                formData.append('email', email);
+                formData.append('telefono', telefono);
+                formData.append('imagen', imagen);
 
-            // Determinar la URL de acción del formulario
-            let actionURL = '/actualizar-empleado';
-            if (id == null) {
-                actionURL = '/guardar-empleado';
-            }
-
-            // Enviar la solicitud al servidor con los datos del empleado
-            fetch(actionURL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Empleado guardado correctamente');
-                    mostrarSnackbar('Datos guardados correctamente', '');
-                    setTimeout(function(){
-                        location.reload();
-                    }, 4000); 
-                } else {
-                    console.error('Error al guardar empleado');
-                    alert('Error al guardar empleado');
+                // Validar que los campos no estén vacíos
+                if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
+                    alert('Por favor completa todos los campos');
+                    return;
                 }
-            })
-            .catch(error => {
-                console.error('Error al enviar la solicitud:', error);
-                alert('Error al enviar la solicitud');
-            });
+
+                // Determinar la URL de acción del formulario
+                let actionURL = '/actualizar-empleado';
+                if (id == null) {
+                    actionURL = '/guardar-empleado';
+                }
+
+                // Enviar la solicitud al servidor con los datos del empleado
+                fetch(actionURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Empleado guardado correctamente');
+                            mostrarSnackbar('Datos guardados correctamente', '');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 4000);
+                        } else {
+                            console.error('Error al guardar empleado');
+                            alert('Error al guardar empleado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al enviar la solicitud:', error);
+                        alert('Error al enviar la solicitud');
+                    });
+            }
         });
 
         // Recargar la página cuando se muestre después de volver atrás
