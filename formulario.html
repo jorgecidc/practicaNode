@@ -4,7 +4,8 @@
 <head>
     <title>Prueba Node</title>
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
     <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
@@ -42,8 +43,8 @@
             color: transparent;
         }
 
-        .pix-campo input:focus + label,
-        .pix-campo input:valid + label {
+        .pix-campo input:focus+label,
+        .pix-campo input:valid+label {
             top: -10px;
             font-size: 12px;
             color: #007bff;
@@ -59,7 +60,7 @@
             pointer-events: none;
         }
 
-        .pix-campo input:not(:placeholder-shown) + label {
+        .pix-campo input:not(:placeholder-shown)+label {
             top: -10px;
             font-size: 12px;
             color: #000;
@@ -69,7 +70,8 @@
 
 <body>
     <header>
-        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i class="far fa-arrow-left"></i></a></div>
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i
+                    class="far fa-arrow-left"></i></a></div>
         <div>
             <a class="pix-menu pix-menu--spring pix-boton-oculto">
                 <span class="pix-menu-box">
@@ -95,6 +97,17 @@
                     <img id="fotoEmpleado" src="#" alt="Foto del empleado" style="max-width: 100%; max-height: 300px;">
                 </div>
             </div>
+            <div id="CPH_Cuerpo_rptCampos_pixDivCelda_1" class="pc-12 tb-12 mv-12 ">
+                <div class="pix-campo pix-label-fija"><label id="CPH_Cuerpo_rptCampos_miLabel_1">Imagen</label>
+                    <div class="pix-upload cargado" data-ancho-img="200" data-alto-img="200"><input
+                            name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctl02" id="imagen" type="file" accept="image/*"
+                            title="Ningún archivo seleccionado"><input
+                            name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctlURL_IMAGEN" type="hidden"
+                            id="CPH_Cuerpo_rptCampos_ctlURL_IMAGEN_1"
+                            data-url-base-imagenes="https://oficinavirtual.pixelinnova.com"
+                            data-modo-corte-imageresizer="crop" data-modo-escala-imageresizer=""></div>
+                </div>
+            </div>
             <div id="nombreField" class="pc-12 tb-12 mv-12">
                 <div class="pix-campo">
                     <label for="nombre">Nombre</label>
@@ -103,34 +116,33 @@
                 </div>
             </div>
             <div id="apellidoField" class="pc-12 tb-12 mv-12">
-                <label for="apellido">Apellidos</label>
-                <div class="pix-campo pix-relleno">
-                    <input name="apellido" type="text" id="apellido" placeholder="Apellido" maxlength="200" required>
+                <div class="pix-campo ">
+                    <label for="apellido">Apellidos</label>
+
+                    <input name="apellido" type="text" id="apellido" maxlength="200" required>
                     <div id="apellidoContador" class="pix-contador-caracteres">0/200</div>
                 </div>
             </div>
             <div id="emailField" class="pc-12 tb-12 mv-12">
-                <label for="email">Email</label>
-                <div class="pix-campo pix-relleno">
-                    <input name="email" type="email" id="email" placeholder="Email" maxlength="200" required>
+                <div class="pix-campo">
+                    <label for="email">Email</label>
+
+                    <input name="email" type="email" id="email" maxlength="200" required>
                     <div id="emailContador" class="pix-contador-caracteres">0/200</div>
                 </div>
             </div>
             <div id="telefonoField" class="pc-12 tb-12 mv-12">
-                <label for="telefono">Teléfono</label>
-                <div class="pix-campo pix-relleno">
-                    <input name="telefono" type="text" id="telefono" placeholder="Teléfono" maxlength="200" required>
+                <div class="pix-campo">
+                    <label for="telefono">Teléfono</label>
+
+                    <input name="telefono" type="text" id="telefono" maxlength="200" required>
                     <div id="telefonoContador" class="pix-contador-caracteres">0/200</div>
                 </div>
             </div>
-            <div id="imagenField" class="pc-12 tb-12 mv-12">
-                <label for="imagen">Imagen</label>
-                <div class="pix-campo pix-relleno">
-                    <input name="imagen" type="file" id="imagen" accept="image/*">
-                </div>
-            </div>
+            
             <div class="pc-12 tb-12 mv-12">
-                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar" class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
+                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar"
+                    class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
             </div>
         </div>
     </form>
@@ -164,17 +176,22 @@
         }
 
         // Función para prellenar el formulario con los datos del empleado
-        function prellenarFormulario() {
-            // Obtener el ID del empleado de la URL
-            const idEmpleado = obtenerParametroURL('id');
-            if (idEmpleado) {
-                obtenerDatosEmpleadoPorID(idEmpleado);
-            } else {
-                // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
-                document.getElementById('formularioEmpleado').reset();
-                document.getElementById('formularioEmpleado').action = '/guardar-empleado';
-            }
-        }
+       // Función para prellenar el formulario con los datos del empleado
+function prellenarFormulario() {
+    // Obtener el ID del empleado de la URL
+    const idEmpleado = obtenerParametroURL('id');
+    if (idEmpleado) {
+        obtenerDatosEmpleadoPorID(idEmpleado);
+    } else {
+        // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
+        document.getElementById('formularioEmpleado').reset();
+        document.getElementById('formularioEmpleado').action = '/guardar-empleado';
+
+        // Ocultar la imagen si el ID es nulo
+        document.getElementById('fotoEmpleado').style.display = 'none';
+    }
+}
+
 
         // Función para actualizar los contadores de caracteres
         function actualizarContadores() {
@@ -189,7 +206,7 @@
         window.onload = prellenarFormulario;
 
         // Manejar el envío del formulario
-        document.getElementById('formularioEmpleado').addEventListener('submit', function(event) {
+        document.getElementById('formularioEmpleado').addEventListener('submit', function (event) {
             event.preventDefault(); // Evitar el envío del formulario para poder validar
             const id = obtenerParametroURL('id'); // Obtener el ID del empleado
             const nombre = document.getElementById('nombre').value;
@@ -221,9 +238,9 @@
 
             // Enviar la solicitud al servidor con los datos del empleado
             fetch(actionURL, {
-                    method: 'POST',
-                    body: formData
-                })
+                method: 'POST',
+                body: formData
+            })
                 .then(response => {
                     if (response.ok) {
                         console.log('Empleado guardado correctamente');
@@ -250,13 +267,19 @@
         });
 
         // Recargar la página cuando se muestre después de volver atrás
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted) {
                 location.reload();
             }
         });
     </script>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js?v=01022023"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-ficheros.js?v=31082022"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.fancytree@2.36.1/dist/modules/jquery.fancytree.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
 </body>
 
 </html>
