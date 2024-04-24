@@ -216,48 +216,20 @@
             });
         });
 
-        // Agregar evento de cambio al input de archivo
-        document.getElementById('imagen').addEventListener('change', function(event) {
-            // Verificar si se ha adjuntado un archivo
-            if (this.files.length > 0) {
-                // Obtener el ID del empleado
-                const idEmpleado = obtenerParametroURL('id');
-                if (idEmpleado) {
-                    const id = obtenerParametroURL('id'); // Obtener el ID del empleado
-                    const nombre = document.getElementById('nombre').value;
-                    const apellido = document.getElementById('apellido').value;
-                    const email = document.getElementById('email').value;
-                    const telefono = document.getElementById('telefono').value;
-                    const formData = new FormData();
-                    formData.append('id', idEmpleado);
-                    formData.append('nombre', nombre);
-                    formData.append('apellido', apellido);
-                    formData.append('email', email);
-                    formData.append('telefono', telefono);
-                    formData.append('imagen', this.files[0]);
-
-                    // Enviar la solicitud al servidor para actualizar el empleado
-                    fetch('/actualizar-empleado', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('Empleado actualizado correctamente');
-                            mostrarSnackbar('Datos actualizados correctamente', '');
-                            location.reload(); // Recargar la página después de enviar el formulario y recibir una respuesta exitosa
-                        } else {
-                            console.error('Error al actualizar empleado');
-                            alert('Error al actualizar empleado');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error al enviar la solicitud:', error);
-                        alert('Error al enviar la solicitud');
-                    });
-                } else {
-                    console.error('No se proporcionó un ID de empleado');
-                }
+        // Manejar cambio en la selección de archivo de imagen
+        document.getElementById('imagen').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Mostrar previsualización de la imagen
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('fotoEmpleado').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                // Ocultar la imagen si no hay archivo seleccionado
+            } else {
+                document.getElementById('fotoEmpleado').style.display = 'none';
             }
         });
 
@@ -271,81 +243,47 @@
             const telefono = document.getElementById('telefono').value;
             const imagen = document.getElementById('imagen').files[0];
 
-            // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
-            if (imagen && id) {
-                const formData = new FormData();
-                formData.append('id', id);
-                formData.append('nombre', nombre);
-                formData.append('apellido', apellido);
-                formData.append('email', email);
-                formData.append('telefono', telefono);
-                formData.append('imagen', imagen);
-
-                // Enviar la solicitud al servidor con los datos del empleado para actualizar
-                fetch('/actualizar-empleado', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Empleado guardado correctamente');
-                        mostrarSnackbar('Datos guardados correctamente', '');
-                        setTimeout(function(){
-                            location.reload();
-                        }, 4000); 
-                    } else {
-                        console.error('Error al actualizar empleado');
-                        alert('Error al actualizar empleado');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al enviar la solicitud:', error);
-                    alert('Error al enviar la solicitud');
-                });
-            } else {
-                // Si no se ha adjuntado un archivo o no hay un ID de empleado presente, continuar con el comportamiento normal del formulario
-                const formData = new FormData();
-                formData.append('id', id);
-                formData.append('nombre', nombre);
-                formData.append('apellido', apellido);
-                formData.append('email', email);
-                formData.append('telefono', telefono);
-                formData.append('imagen', imagen);
-
-                // Validar que los campos no estén vacíos
-                if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
-                    alert('Por favor completa todos los campos');
-                    return;
-                }
-
-                // Determinar la URL de acción del formulario
-                let actionURL = '/actualizar-empleado';
-                if (id == null) {
-                    actionURL = '/guardar-empleado';
-                }
-
-                // Enviar la solicitud al servidor con los datos del empleado
-                fetch(actionURL, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Empleado guardado correctamente');
-                        mostrarSnackbar('Datos guardados correctamente', '');
-                        setTimeout(function(){
-                            location.reload();
-                        }, 4000); 
-                    } else {
-                        console.error('Error al guardar empleado');
-                        alert('Error al guardar empleado');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al enviar la solicitud:', error);
-                    alert('Error al enviar la solicitud');
-                });
+            // Validar que los campos no estén vacíos
+            if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
+                alert('Por favor completa todos los campos');
+                return;
             }
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('email', email);
+            formData.append('telefono', telefono);
+            formData.append('imagen', imagen);
+
+            // Determinar la URL de acción del formulario
+            let actionURL = '/actualizar-empleado';
+            if (id == null) {
+                actionURL = '/guardar-empleado';
+            }
+
+            // Enviar la solicitud al servidor con los datos del empleado
+            fetch(actionURL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Empleado guardado correctamente');
+                    mostrarSnackbar('Datos guardados correctamente', '');
+                    setTimeout(function(){
+                        location.reload();
+                    }, 4000); 
+                } else {
+                    console.error('Error al guardar empleado');
+                    alert('Error al guardar empleado');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar la solicitud:', error);
+                alert('Error al enviar la solicitud');
+            });
         });
 
         // Recargar la página cuando se muestre después de volver atrás
