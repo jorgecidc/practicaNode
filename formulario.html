@@ -21,6 +21,10 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
     <style>
+        form{
+            margin-left: 20px;
+            margin-top: 20px;
+        }
         .pix-campo {
             position: relative;
         }
@@ -176,22 +180,20 @@
         }
 
         // Función para prellenar el formulario con los datos del empleado
-       // Función para prellenar el formulario con los datos del empleado
-function prellenarFormulario() {
-    // Obtener el ID del empleado de la URL
-    const idEmpleado = obtenerParametroURL('id');
-    if (idEmpleado) {
-        obtenerDatosEmpleadoPorID(idEmpleado);
-    } else {
-        // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
-        document.getElementById('formularioEmpleado').reset();
-        document.getElementById('formularioEmpleado').action = '/guardar-empleado';
+        function prellenarFormulario() {
+            // Obtener el ID del empleado de la URL
+            const idEmpleado = obtenerParametroURL('id');
+            if (idEmpleado) {
+                obtenerDatosEmpleadoPorID(idEmpleado);
+            } else {
+                // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
+                document.getElementById('formularioEmpleado').reset();
+                document.getElementById('formularioEmpleado').action = '/guardar-empleado';
 
-        // Ocultar la imagen si el ID es nulo
-        document.getElementById('fotoEmpleado').style.display = 'none';
-    }
-}
-
+                // Ocultar la imagen si el ID es nulo
+                document.getElementById('fotoEmpleado').style.display = 'none';
+            }
+        }
 
         // Función para actualizar los contadores de caracteres
         function actualizarContadores() {
@@ -205,6 +207,60 @@ function prellenarFormulario() {
         // Llamar a la función para prellenar el formulario cuando se cargue la página
         window.onload = prellenarFormulario;
 
+        // Agregar eventos de entrada a cada campo para actualizar los contadores
+        const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
+        campos.forEach(input => {
+            input.addEventListener('input', () => {
+                const contador = input.nextElementSibling;
+                contador.textContent = `${input.value.length}/200`;
+            });
+        });
+
+        // Agregar evento de cambio al input de archivo
+        document.getElementById('imagen').addEventListener('change', function(event) {
+            // Verificar si se ha adjuntado un archivo
+            if (this.files.length > 0) {
+                // Obtener el ID del empleado
+                const idEmpleado = obtenerParametroURL('id');
+                if (idEmpleado) {
+                    const id = obtenerParametroURL('id'); // Obtener el ID del empleado
+                    const nombre = document.getElementById('nombre').value;
+                    const apellido = document.getElementById('apellido').value;
+                    const email = document.getElementById('email').value;
+                    const telefono = document.getElementById('telefono').value;
+                    const formData = new FormData();
+                    formData.append('id', idEmpleado);
+                    formData.append('nombre', nombre);
+                    formData.append('apellido', apellido);
+                    formData.append('email', email);
+                    formData.append('telefono', telefono);
+                    formData.append('imagen', this.files[0]);
+
+                    // Enviar la solicitud al servidor para actualizar el empleado
+                    fetch('/actualizar-empleado', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Empleado actualizado correctamente');
+                            mostrarSnackbar('Datos actualizados correctamente', '');
+                            location.reload(); // Recargar la página después de enviar el formulario y recibir una respuesta exitosa
+                        } else {
+                            console.error('Error al actualizar empleado');
+                            alert('Error al actualizar empleado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al enviar la solicitud:', error);
+                        alert('Error al enviar la solicitud');
+                    });
+                } else {
+                    console.error('No se proporcionó un ID de empleado');
+                }
+            }
+        });
+
         // Manejar el envío del formulario
         document.getElementById('formularioEmpleado').addEventListener('submit', function (event) {
             event.preventDefault(); // Evitar el envío del formulario para poder validar
@@ -215,37 +271,71 @@ function prellenarFormulario() {
             const telefono = document.getElementById('telefono').value;
             const imagen = document.getElementById('imagen').files[0];
 
-            const formData = new FormData();
-            formData.append('id', id);
-            formData.append('nombre', nombre);
-            formData.append('apellido', apellido);
-            formData.append('email', email);
-            formData.append('telefono', telefono);
-            formData.append('imagen', imagen);
+            // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
+            if (imagen && id) {
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('nombre', nombre);
+                formData.append('apellido', apellido);
+                formData.append('email', email);
+                formData.append('telefono', telefono);
+                formData.append('imagen', imagen);
 
-
-            // Validar que los campos no estén vacíos
-            if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-
-            // Determinar la URL de acción del formulario
-            let actionURL = '/actualizar-empleado';
-            if (id == null) {
-                actionURL = '/guardar-empleado';
-            }
-
-            // Enviar la solicitud al servidor con los datos del empleado
-            fetch(actionURL, {
-                method: 'POST',
-                body: formData
-            })
+                // Enviar la solicitud al servidor con los datos del empleado para actualizar
+                fetch('/actualizar-empleado', {
+                    method: 'POST',
+                    body: formData
+                })
                 .then(response => {
                     if (response.ok) {
                         console.log('Empleado guardado correctamente');
-                        // Recargar la página actual para reflejar los cambios
-                        location.reload();
+                        mostrarSnackbar('Datos guardados correctamente', '');
+                        setTimeout(function(){
+                            location.reload();
+                        }, 4000); 
+                    } else {
+                        console.error('Error al actualizar empleado');
+                        alert('Error al actualizar empleado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar la solicitud:', error);
+                    alert('Error al enviar la solicitud');
+                });
+            } else {
+                // Si no se ha adjuntado un archivo o no hay un ID de empleado presente, continuar con el comportamiento normal del formulario
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('nombre', nombre);
+                formData.append('apellido', apellido);
+                formData.append('email', email);
+                formData.append('telefono', telefono);
+                formData.append('imagen', imagen);
+
+                // Validar que los campos no estén vacíos
+                if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
+                    alert('Por favor completa todos los campos');
+                    return;
+                }
+
+                // Determinar la URL de acción del formulario
+                let actionURL = '/actualizar-empleado';
+                if (id == null) {
+                    actionURL = '/guardar-empleado';
+                }
+
+                // Enviar la solicitud al servidor con los datos del empleado
+                fetch(actionURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Empleado guardado correctamente');
+                        mostrarSnackbar('Datos guardados correctamente', '');
+                        setTimeout(function(){
+                            location.reload();
+                        }, 4000); 
                     } else {
                         console.error('Error al guardar empleado');
                         alert('Error al guardar empleado');
@@ -255,15 +345,7 @@ function prellenarFormulario() {
                     console.error('Error al enviar la solicitud:', error);
                     alert('Error al enviar la solicitud');
                 });
-        });
-
-        // Agregar eventos de entrada a cada campo para actualizar los contadores
-        const campos = document.querySelectorAll('input[type="text"], input[type="email"]');
-        campos.forEach(input => {
-            input.addEventListener('input', () => {
-                const contador = input.nextElementSibling;
-                contador.textContent = `${input.value.length}/200`;
-            });
+            }
         });
 
         // Recargar la página cuando se muestre después de volver atrás
