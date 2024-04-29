@@ -67,7 +67,119 @@
             </div>
         </div>
         <div id="contenido">
-            hola hola
+            <div class="pix-tarjeta">
+                <div class="pix-tarjeta-titulo">
+                    <i class="fas fa-comments"></i>Departamentos
+                </div>
+                <div class="pix-fila">
+                    <div class="pc-10 tb-12 mv-12">
+                        <div class="pix-campo">
+                            <label for="txtFiltroTexto">Buscar texto...</label>
+                            <input id="txtFiltroTexto" type="search" name="q">
+                        </div>
+                    </div>
+                    <div class="pc-2 tb-12 mv-12">
+                        <a class="pix-btn pix-btn-filtros-busqueda" href="#" onclick="buscarPorNombre()"><i class="far fa-search"></i>Buscar</a>
+                    </div>
+                </div>
+                <div class="pix-resultados-registros" id="datosDepartamentos">
+                    <!-- Aquí se insertarán los datos de los departamentos -->
+                </div>
+            </div>
+            <a href="formulario.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
         </div>
+    </div>
+    <script>
+        // Función para renderizar los datos de los departamentos
+        function renderizarDepartamentos(data) {
+            const datosDepartamentosDiv = document.getElementById('datosDepartamentos');
+            datosDepartamentosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
+
+            // Iterar sobre los datos de los departamentos y agregarlos al DOM
+            data.forEach(departamento => {
+                const departamentoElement = document.createElement('div');
+                departamentoElement.innerHTML = `
+                    <div class="pix-registro">
+                        <div class="pix-registro-contenido">
+                            <a href="formulario.html?id=${departamento.ID}" class="enlaceDepartamento">
+                                <strong class="nombreDepartamento">${departamento.NOMBRE}</strong>
+                            </a>
+                            <span class="descripcionDepartamento">${departamento.DESCRIPCION}</span>
+                        </div>
+                        <div class="pix-registro-acciones">
+                            <div>
+                                <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${departamento.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                datosDepartamentosDiv.appendChild(departamentoElement);
+            });
+        }
+
+        // Función para obtener los datos de los departamentos y llamar a la función de renderizado
+        function obtenerDatosDepartamentos() {
+            fetch('/datos_departamentos')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Datos de departamentos:', data);
+                    renderizarDepartamentos(data);
+                })
+                .catch(error => console.error('Error al obtener datos de departamentos:', error));
+        }
+
+        // Función para confirmar antes de eliminar un departamento
+        function confirmarEliminar(idDepartamento) {
+            if (confirm("¿Realmente deseas eliminar este registro?")) {
+                marcarComoEliminado(idDepartamento);
+            }
+        }
+
+        // Función para marcar un departamento como "eliminado"
+        function marcarComoEliminado(idDepartamento) {
+            fetch(`/marcar-como-eliminado`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: idDepartamento })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Departamento marcado como eliminado correctamente');
+                        obtenerDatosDepartamentos();
+                    } else {
+                        console.error('Error al marcar como eliminado departamento');
+                        alert('Error al marcar como eliminado departamento');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar la solicitud de marcar como eliminado departamento:', error);
+                    alert('Error al enviar la solicitud de marcar como eliminado departamento');
+                });
+        }
+
+        // Función para buscar por nombre
+        function buscarPorNombre() {
+            const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
+            if (textoBusqueda === '') {
+                obtenerDatosDepartamentos();
+            } else {
+                fetch('/datos_departamentos')
+                    .then(response => response.json())
+                    .then(data => {
+                        const departamentosFiltrados = data.filter(departamento => {
+                            return departamento.NOMBRE.toLowerCase().includes(textoBusqueda);
+                        });
+
+                        renderizarDepartamentos(departamentosFiltrados);
+                    })
+                    .catch(error => console.error('Error al obtener datos de departamentos:', error));
+            }
+        }
+
+        // Llamar a la función obtenerDatosDepartamentos al cargar la página
+        window.onload = obtenerDatosDepartamentos;
+    </script>
 </body>
 </html>

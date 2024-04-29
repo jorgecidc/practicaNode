@@ -16,21 +16,21 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// const connection = mysql.createConnection({
-//   host: "localhost",
-//   port: 3306,
-//   user: "root",
-//   password: "",
-//   database: "NODE_PRUEBAS",
-// });
-
- const connection = mysql.createConnection({
-  host: "82.223.123.233",
+const connection = mysql.createConnection({
+  host: "localhost",
   port: 3306,
-  user: "user_pruebanode",
-  password: "O@3zk8s95",
-  database: "bd_pruebanode",
- });
+  user: "root",
+  password: "",
+  database: "NODE_PRUEBAS",
+});
+
+//  const connection = mysql.createConnection({
+//   host: "82.223.123.233",
+//   port: 3306,
+//   user: "user_pruebanode",
+//   password: "O@3zk8s95",
+//   database: "bd_pruebanode",
+//  });
 
 
 connection.connect((err) => {
@@ -98,6 +98,25 @@ const server = http.createServer((req, res) => {
         res.end(responseData);
       }
     );
+  } else if (pathname === "/datos_departamentos" && req.method === "GET") {
+    console.log("Solicitud de datos de departamentos recibida");
+
+    connection.query(
+      "SELECT ID, NOMBRE, DESCRIPCION FROM departamentos",
+      (error, results) => {
+        if (error) {
+          console.error("Error al consultar la base de datos:", error);
+          res.writeHead(500);
+          res.end("Error al consultar la base de datos");
+          return;
+        }
+
+        const responseData = JSON.stringify(results);
+        console.log("Datos de departamentos enviados:", responseData);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(responseData);
+      }
+    );
   } else if (pathname === "/datos_empleado" && req.method === "GET") {
     const queryObject = url.parse(req.url, true).query;
     const idEmpleado = queryObject.id;
@@ -139,8 +158,7 @@ const server = http.createServer((req, res) => {
       const { id, nombre, apellido, email, telefono } = req.body;
       let imagen = req.file ? req.file.filename : null;
 
-      if (id== "hola") {
-        // Si hay un ID, actualiza el empleado en la base de datos
+      if (id == "hola") {
         connection.query(
           "UPDATE empleado SET NOMBRE=?, APELLIDO=?, EMAIL=?, TELEFONO=?, IMG=? WHERE ID=?",
           [nombre, apellido, email, telefono, imagen, id],
@@ -155,17 +173,12 @@ const server = http.createServer((req, res) => {
               return;
             }
 
-            console.log(
-              "holaaaaaa"
-            );
+            console.log("Empleado actualizado correctamente en la base de datos");
             res.writeHead(200);
-            res.end(
-              "holaaaaa"
-            );
+            res.end("Empleado actualizado correctamente en la base de datos");
           }
         );
       } else {
-        // Si no hay un ID, inserta un nuevo empleado en la base de datos
         connection.query(
           'INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, SINO) VALUES (?, ?, ?, ?, ?, 1)',
           [nombre, apellido, email, telefono, imagen],
@@ -180,81 +193,70 @@ const server = http.createServer((req, res) => {
               return;
             }
 
-            console.log(
-              "Empleado guardado correctamente en la base de datos"
-            );
+            console.log("Empleado guardado correctamente en la base de datos");
             res.writeHead(200);
             res.end("Empleado guardado correctamente en la base de datos");
           }
         );
       }
     });
-  }   else if (pathname === "/actualizar-empleado" && req.method === "POST") {
+  } else if (pathname === "/actualizar-empleado" && req.method === "POST") {
     console.log("Solicitud para actualizar empleado recibida");
     upload.single("imagen")(req, res, (err) => {
-        if (err) {
-            console.error("Error al cargar la imagen:", err);
-            res.writeHead(500);
-            res.end("Error al cargar la imagen");
-            return;
-        }
+      if (err) {
+        console.error("Error al cargar la imagen:", err);
+        res.writeHead(500);
+        res.end("Error al cargar la imagen");
+        return;
+      }
 
-        try {
-            const { id, nombre, apellido, email, telefono } = req.body;
-            let imagen;
+      try {
+        const { id, nombre, apellido, email, telefono } = req.body;
+        let imagen;
 
-            // Consulta la base de datos para obtener la imagen actual del empleado
+        connection.query(
+          "SELECT IMG FROM empleado WHERE ID = ?",
+          [id],
+          (error, results) => {
+            if (error) {
+              console.error("Error al obtener la imagen del empleado:", error);
+              res.writeHead(500);
+              res.end("Error al obtener la imagen del empleado");
+              return;
+            }
+
+            imagen = req.file ? req.file.filename : results[0].IMG;
+
+            console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen });
+
             connection.query(
-              "SELECT IMG FROM empleado WHERE ID = ?",
-              [id],
+              'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? WHERE ID = ?',
+              [nombre, apellido, email, telefono, imagen, id],
               (error, results) => {
                 if (error) {
-                  console.error("Error al obtener la imagen del empleado:", error);
+                  console.error(
+                    "Error al actualizar empleado en la base de datos:",
+                    error
+                  );
                   res.writeHead(500);
-                  res.end("Error al obtener la imagen del empleado");
+                  res.end("Error al actualizar empleado en la base de datos");
                   return;
                 }
 
-                // Si no se carga una nueva imagen, utiliza la imagen actual
-                imagen = req.file ? req.file.filename : results[0].IMG;
-
-                // Imprimir los datos que se van a actualizar
-                console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen });
-
-                // Actualiza el empleado en la base de datos
-                connection.query(
-                  'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? WHERE ID = ?',
-                  [nombre, apellido, email, telefono, imagen, id],
-                  (error, results) => {
-                    if (error) {
-                      console.error(
-                        "Error al actualizar empleado en la base de datos:",
-                        error
-                      );
-                      res.writeHead(500);
-                      res.end("Error al actualizar empleado en la base de datos");
-                      return;
-                    }
-
-                    console.log(
-                      "Empleado actualizado correctamente en la base de datos"
-                    );
-                    res.writeHead(200);
-                    res.end("Empleado actualizado correctamente en la base de datos");
-                  }
-                );
+                console.log("Empleado actualizado correctamente en la base de datos");
+                res.writeHead(200);
+                res.end("Empleado actualizado correctamente en la base de datos");
               }
             );
-        } catch (error) {
-            console.error("Error al procesar la solicitud:", error);
-            res.writeHead(400);
-            res.end("Error al procesar la solicitud");
-        }
+          }
+        );
+      } catch (error) {
+        console.error("Error al procesar la solicitud:", error);
+        res.writeHead(400);
+        res.end("Error al procesar la solicitud");
+      }
     });
-}
-
-
-   else {
+  } else {
     let filePath = "." + pathname;
     if (filePath === "./") {
       filePath = "./index.html";
@@ -263,7 +265,7 @@ const server = http.createServer((req, res) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {
         console.error("Error al leer el archivo:", err);
-        res.writeHead(404); // Cambio el código de estado a 404 para indicar que el archivo no se encontró
+        res.writeHead(404); 
         res.end("Archivo no encontrado");
         return;
       }
