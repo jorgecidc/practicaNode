@@ -148,10 +148,10 @@
                     <div class="pix-campo cargado pix-label-fija" id="adjuntarImagen"><label
                             id="CPH_Cuerpo_rptCampos_miLabel_1">Imagen</label>
                         <div class="pix-upload cargado" data-ancho-img="200" data-alto-img="200">
-                                <input
+                            <input
                                 name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctl02" id="imagen" type="file" accept="image/*"
                                 title="Ningún archivo seleccionado">
-                                <input
+                            <input
                                 name="ctl00$CPH_Cuerpo$rptCampos$ctl01$ctlURL_IMAGEN" type="hidden"
                                 id="CPH_Cuerpo_rptCampos_ctlURL_IMAGEN_1"
                                 data-url-base-imagenes="https://oficinavirtual.pixelinnova.com"
@@ -192,12 +192,23 @@
                 </div>
             </div>
 
+            <div id="departamentoField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="departamento">Departamento</label><br>
+                    <input  type="text" readonly id="departamentoPrellenado">Nombre del Departamento Prerellenado</input>
+                    <select name="departamento" id="departamento">
+                        <!-- Options will be dynamically filled by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
             <div class="pc-12 tb-12 mv-12">
                 <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar"
                     class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
             </div>
         </div>
     </form>
+    
 
     <script>
         function goBack() {
@@ -222,6 +233,7 @@
                     document.getElementById('telefono').value = empleado[0].TELEFONO;
                     document.getElementById('fotoEmpleado').src = `./img/${empleado[0].IMG}`;
                     document.getElementById('imagenNombre').textContent = `${empleado[0].IMG}`;
+                    document.getElementById('departamentoPrellenado').value = empleado[0].DEPARTAMENTO;
                     // Actualizar contadores de caracteres
                     actualizarContadores();
                 })
@@ -229,30 +241,62 @@
         }
 
         // Función para prellenar el formulario con los datos del empleado
-        function prellenarFormulario() {
-            // Obtener el ID del empleado de la URL
-            const idEmpleado = obtenerParametroURL('id');
-            if (idEmpleado) {
-                obtenerDatosEmpleadoPorID(idEmpleado);
-                // Ocultar la opción de adjuntar imagen cuando haya una imagen prerellenada
-                document.getElementById('adjuntarImagen').style.display = 'none';
-            } else {
-                // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
-                document.getElementById('formularioEmpleado').reset();
-                document.getElementById('formularioEmpleado').action = '/guardar-empleado';
+function prellenarFormulario() {
+    // Obtener el ID del empleado de la URL
+    const idEmpleado = obtenerParametroURL('id');
+    if (idEmpleado) {
+        obtenerDatosEmpleadoPorID(idEmpleado);
+        // Ocultar la opción de adjuntar imagen cuando haya una imagen prerellenada
+        document.getElementById('adjuntarImagen').style.display = 'none';
+    } else {
+        // Si no hay ID en la URL, limpiar los campos y establecer la acción del formulario para guardar un nuevo empleado
+        document.getElementById('formularioEmpleado').reset();
+        document.getElementById('formularioEmpleado').action = '/guardar-empleado';
 
-                // Ocultar la imagen si el ID es nulo
-                document.getElementById('fotoEmpleado').style.display = 'none';
+        // Ocultar la imagen si el ID es nulo
+        document.getElementById('fotoEmpleado').style.display = 'none';
 
-                // Verificar si los campos del formulario están vacíos
-                const camposVacios = Array.from(document.querySelectorAll('input[type="text"], input[type="email"]')).some(input => input.value.trim() === '');
-                if (camposVacios) {
-                    // Mostrar el campo de adjuntar imagen si los campos están vacíos
-                    document.getElementById('adjuntarImagen').style.display = 'block';
-                    document.getElementById('eliminar-imagen').style.display = 'none';
-                }
-            }
+        // Verificar si los campos del formulario están vacíos
+        const camposVacios = Array.from(document.querySelectorAll('input[type="text"], input[type="email"]')).some(input => input.value.trim() === '');
+        if (camposVacios) {
+            // Mostrar el campo de adjuntar imagen si los campos están vacíos
+            document.getElementById('adjuntarImagen').style.display = 'block';
+            document.getElementById('eliminar-imagen').style.display = 'none';
         }
+    }
+    fetch('/datos_departamentos')
+        .then(response => response.json())
+        .then(departamentos => {
+            console.log('Departamentos recibidos:', departamentos);
+            const selectDepartamento = document.getElementById('departamento');
+            departamentos.forEach(departamento => {
+                const option = document.createElement('option');
+                option.value = departamento.ID;
+                option.textContent = departamento.NOMBRE;
+                selectDepartamento.appendChild(option);
+            });
+            
+            // Obtener el departamento del empleado
+            const idDepartamentoEmpleado = obtenerDepartamentoEmpleado(idEmpleado);
+            // Preseleccionar el departamento del empleado en el formulario
+            selectDepartamento.value = idDepartamentoEmpleado;
+        })
+        .catch(error => console.error('Error al obtener departamentos:', error));
+}
+
+// Función para obtener el departamento del empleado
+function obtenerDepartamentoEmpleado(idEmpleado) {
+    return fetch(`/datos_empleado?id=${idEmpleado}`)
+        .then(response => response.json())
+        .then(empleado => {
+            return empleado[0].DEPARTAMENTO;
+        })
+        .catch(error => {
+            console.error('Error al obtener datos del empleado:', error);
+            return null;
+        });
+}
+        
 
         // Función para actualizar los contadores de caracteres
         function actualizarContadores() {
@@ -328,6 +372,7 @@
             const email = document.getElementById('email').value;
             const telefono = document.getElementById('telefono').value;
             const imagen = document.getElementById('imagen').files[0];
+            const departamento = document.getElementById('departamento').selectedOptions[0].textContent;
 
             // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
             if (imagen && id) {
@@ -338,6 +383,7 @@
                 formData.append('email', email);
                 formData.append('telefono', telefono);
                 formData.append('imagen', imagen);
+                formData.append('departamento', departamento);
 
                 // Enviar la solicitud al servidor con los datos del empleado para actualizar
                 fetch('/actualizar-empleado', {
@@ -369,6 +415,7 @@
                 formData.append('email', email);
                 formData.append('telefono', telefono);
                 formData.append('imagen', imagen);
+                formData.append('departamento', departamento);
 
                 // Validar que los campos no estén vacíos
                 if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {

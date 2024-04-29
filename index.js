@@ -83,7 +83,7 @@ const server = http.createServer((req, res) => {
     console.log("Solicitud de datos de empleados recibida");
 
     connection.query(
-      "SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG FROM empleado WHERE SINO = true",
+      "SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, DEPARTAMENTO FROM empleado WHERE SINO = true",
       (error, results) => {
         if (error) {
           console.error("Error al consultar la base de datos:", error);
@@ -123,7 +123,7 @@ const server = http.createServer((req, res) => {
 
     if (idEmpleado) {
       connection.query(
-        "SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG FROM empleado WHERE ID = ?",
+        "SELECT ID, NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, DEPARTAMENTO FROM empleado WHERE ID = ?",
         [idEmpleado],
         (error, results) => {
           if (error) {
@@ -146,7 +146,7 @@ const server = http.createServer((req, res) => {
     }
   } else if (pathname === "/guardar-empleado") {
     console.log("Solicitud para guardar empleado recibida");
-
+  
     upload.single("imagen")(req, res, (err) => {
       if (err) {
         console.error("Error al cargar la imagen:", err);
@@ -154,53 +154,32 @@ const server = http.createServer((req, res) => {
         res.end("Error al cargar la imagen");
         return;
       }
-
-      const { id, nombre, apellido, email, telefono } = req.body;
+  
+      const { nombre, apellido, email, telefono, departamento } = req.body;
       let imagen = req.file ? req.file.filename : null;
-
-      if (id == "hola") {
-        connection.query(
-          "UPDATE empleado SET NOMBRE=?, APELLIDO=?, EMAIL=?, TELEFONO=?, IMG=? WHERE ID=?",
-          [nombre, apellido, email, telefono, imagen, id],
-          (error, results) => {
-            if (error) {
-              console.error(
-                "Error al actualizar empleado en la base de datos:",
-                error
-              );
-              res.writeHead(500);
-              res.end("Error al actualizar empleado en la base de datos");
-              return;
-            }
-
-            console.log("Empleado actualizado correctamente en la base de datos");
-            res.writeHead(200);
-            res.end("Empleado actualizado correctamente en la base de datos");
+  
+      connection.query(
+        'INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, DEPARTAMENTO, SINO) VALUES (?, ?, ?, ?, ?, ?, 1)',
+        [nombre, apellido, email, telefono, imagen, departamento],
+        (error, results) => {
+          if (error) {
+            console.error(
+              "Error al insertar empleado en la base de datos:",
+              error
+            );
+            res.writeHead(500);
+            res.end("Error al guardar empleado en la base de datos");
+            return;
           }
-        );
-      } else {
-        connection.query(
-          'INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, SINO) VALUES (?, ?, ?, ?, ?, 1)',
-          [nombre, apellido, email, telefono, imagen],
-          (error, results) => {
-            if (error) {
-              console.error(
-                "Error al insertar empleado en la base de datos:",
-                error
-              );
-              res.writeHead(500);
-              res.end("Error al guardar empleado en la base de datos");
-              return;
-            }
-
-            console.log("Empleado guardado correctamente en la base de datos");
-            res.writeHead(200);
-            res.end("Empleado guardado correctamente en la base de datos");
-          }
-        );
-      }
+  
+          console.log("Empleado guardado correctamente en la base de datos");
+          res.writeHead(200);
+          res.end("Empleado guardado correctamente en la base de datos");
+        }
+      );
     });
-  } else if (pathname === "/actualizar-empleado" && req.method === "POST") {
+  } 
+  else if (pathname === "/actualizar-empleado" && req.method === "POST") {
     console.log("Solicitud para actualizar empleado recibida");
     upload.single("imagen")(req, res, (err) => {
       if (err) {
@@ -209,11 +188,11 @@ const server = http.createServer((req, res) => {
         res.end("Error al cargar la imagen");
         return;
       }
-
+  
       try {
-        const { id, nombre, apellido, email, telefono } = req.body;
+        const { id, nombre, apellido, email, telefono, departamento } = req.body;
         let imagen;
-
+  
         connection.query(
           "SELECT IMG FROM empleado WHERE ID = ?",
           [id],
@@ -224,14 +203,14 @@ const server = http.createServer((req, res) => {
               res.end("Error al obtener la imagen del empleado");
               return;
             }
-
+  
             imagen = req.file ? req.file.filename : results[0].IMG;
-
-            console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen });
-
+  
+            console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen, departamento });
+  
             connection.query(
-              'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? WHERE ID = ?',
-              [nombre, apellido, email, telefono, imagen, id],
+              'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? , DEPARTAMENTO = ? WHERE ID = ?',
+              [nombre, apellido, email, telefono, imagen, departamento, id],
               (error, results) => {
                 if (error) {
                   console.error(
@@ -242,7 +221,7 @@ const server = http.createServer((req, res) => {
                   res.end("Error al actualizar empleado en la base de datos");
                   return;
                 }
-
+  
                 console.log("Empleado actualizado correctamente en la base de datos");
                 res.writeHead(200);
                 res.end("Empleado actualizado correctamente en la base de datos");
