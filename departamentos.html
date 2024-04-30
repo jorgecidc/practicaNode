@@ -34,7 +34,7 @@
             bottom: 0;
             background-color: #fff; /* Cambia el color de fondo según tu preferencia */
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el menú */
-            z-index: 1000; /* Asegura que el menú esté por encima de otros elementos */
+            z-index: 10; /* Asegura que el menú esté por encima de otros elementos */
         }
         #contenido {
             margin-left: 322px; /* Ancho del menú */
@@ -45,6 +45,24 @@
     <meta name="robots" content="noindex nofollow">
 </head>
 <body>
+    <header>
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i
+                    class="far fa-arrow-left"></i></a></div>
+        <div>
+            <a class="pix-menu pix-menu--spring pix-boton-oculto">
+                <span class="pix-menu-box">
+                    <span class="pix-menu-inner"></span>
+                </span>
+            </a>
+        </div>
+        <div>
+            <a id="btnPixContextual" class="btn-header pix-btn-mini-menu" href="#"><i class="far fa-ellipsis-v"></i></a>
+            <div class="pix-mini-menu">
+                <a href="/pix-admin/mi-cuenta"><i class="fas fa-user"></i>Mi cuenta</a>
+                <a href="/login.aspx?logout=1"><i class="fas fa-power-off"></i>Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
     <div id="contenedorPrincipal">
         <div id="pix-contenedor-menu">
             <div id="pix-contenedor-menu">
@@ -86,7 +104,7 @@
                     <!-- Aquí se insertarán los datos de los departamentos -->
                 </div>
             </div>
-            <a href="formulario.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
+            <a href="formularioDepartamentos.html" class="btnCirculo btnAccionPrincipal" title="Añadir"><i class="far fa-plus"></i></a>
         </div>
     </div>
     <script>
@@ -101,7 +119,7 @@
                 departamentoElement.innerHTML = `
                     <div class="pix-registro">
                         <div class="pix-registro-contenido">
-                            <a href="formulario.html?id=${departamento.ID}" class="enlaceDepartamento">
+                            <a href="formularioDepartamentos.html?id=${departamento.ID}" class="enlaceDepartamento">
                                 <strong class="nombreDepartamento">${departamento.NOMBRE}</strong>
                             </a>
                             <span class="descripcionDepartamento">${departamento.DESCRIPCION}</span>
@@ -137,27 +155,27 @@
 
         // Función para marcar un departamento como "eliminado"
         function marcarComoEliminado(idDepartamento) {
-            fetch(`/marcar-como-eliminado`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: idDepartamento })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Departamento marcado como eliminado correctamente');
-                        obtenerDatosDepartamentos();
-                    } else {
-                        console.error('Error al marcar como eliminado departamento');
-                        alert('Error al marcar como eliminado departamento');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al enviar la solicitud de marcar como eliminado departamento:', error);
-                    alert('Error al enviar la solicitud de marcar como eliminado departamento');
-                });
+    fetch(`/eliminar-departamento`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idDpt: idDepartamento })
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Departamento eliminado correctamente');
+            obtenerDatosDepartamentos();
+        } else {
+            console.error('Error al eliminar departamento');
+            alert('Error al eliminar departamento');
         }
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud de eliminar departamento:', error);
+        alert('Error al enviar la solicitud de eliminar departamento');
+    });
+}
 
         // Función para buscar por nombre
         function buscarPorNombre() {

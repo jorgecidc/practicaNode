@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Prueba Node</title>
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=.8, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,600" />
+    <link rel="stylesheet" href="//cdn.pixelinnova.com/pixelone/fontawesome.all.min.css" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-grid.css" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-sistema.css?v=01022023" rel="stylesheet" />
+    <link href="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.css" rel="stylesheet" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
+    <meta name="msapplication-TileColor" content="#112233" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="stylesheet" href="css/custom.css">
+    <style>
+        form {
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+
+        .pix-campo {
+            position: relative;
+        }
+
+        .pix-campo input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .pix-campo input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .pix-campo input:focus::placeholder,
+        .pix-campo input:not(:placeholder-shown)::placeholder {
+            color: transparent;
+        }
+
+        .pix-campo input:focus+label,
+        .pix-campo input:valid+label {
+            top: -10px;
+            font-size: 12px;
+            color: #007bff;
+        }
+
+        .pix-campo label {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            font-size: 16px;
+            color: #999;
+            transition: top 0.3s ease-in-out, font-size 0.3s ease-in-out, color 0.3s ease-in-out;
+            pointer-events: none;
+        }
+
+        .pix-campo input:not(:placeholder-shown)+label {
+            top: -10px;
+            font-size: 12px;
+            color: #000;
+        }
+    </style>
+    <meta name="robots" content="noindex nofollow">
+</head>
+
+<body>
+    <header>
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i
+                    class="far fa-arrow-left"></i></a></div>
+        <div>
+            <a class="pix-menu pix-menu--spring pix-boton-oculto">
+                <span class="pix-menu-box">
+                    <span class="pix-menu-inner"></span>
+                </span>
+            </a>
+        </div>
+        <div>
+            <a id="btnPixContextual" class="btn-header pix-btn-mini-menu" href="#"><i class="far fa-ellipsis-v"></i></a>
+            <div class="pix-mini-menu">
+                <a href="/pix-admin/mi-cuenta"><i class="fas fa-user"></i>Mi cuenta</a>
+                <a href="/login.aspx?logout=1"><i class="fas fa-power-off"></i>Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+    <form id="formularioDepartamento" action="">
+        <div class="pix-tarjeta-titulo">
+            <i class="fas fa-folder-tree"></i> Formulario de Departamento
+        </div>
+        <div class="pix-grid pad-8">
+            <div id="nombreField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="nombre">Nombre</label>
+                    <input name="nombre" type="text" id="nombre" required>
+                </div>
+            </div>
+            <div id="descripcionField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="descripcion">Descripción</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" cols="50" required></textarea>
+                </div>
+            </div>
+            <div class="pc-12 tb-12 mv-12">
+                <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar"
+                    class="pix-validar-form btnCirculo btnAccionPrincipal" title="Grabar">
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function goBack() {
+            window.location.href = "/index.html"; // Redirigir siempre al index.html
+        }
+    </script>
+     <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idDepartamento = urlParams.get('id');
+            
+            if (idDepartamento) {
+                // Realizar una solicitud GET para obtener los datos del departamento
+                fetch(`/datos_departamento?id=${idDepartamento}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById("nombre").value = data.NOMBRE;
+                        document.getElementById("descripcion").value = data.DESCRIPCION;
+                        cargarCampos();
+                    })
+                    .catch(error => console.error('Error al obtener los datos del departamento:', error));
+            }
+        };
+    
+    
+    </script>
+    
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js?v=01022023"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-ficheros.js?v=31082022"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.fancytree@2.36.1/dist/modules/jquery.fancytree.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formulario = document.getElementById('formularioDepartamento');
+    
+            formulario.addEventListener('submit', function(event) {
+                event.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+                
+                const idDpt = obtenerParametroDeURL('id');
+                const nombre = document.getElementById('nombre').value;
+                const descripcion = document.getElementById('descripcion').value;
+    
+                // Imprimir los datos enviados por el formulario en la consola
+                console.log('Datos del formulario:', { idDpt, nombre, descripcion });
+    
+                // Crear un objeto FormData y agregar los datos del formulario
+                const formData = new FormData();
+                formData.append('idDpt', idDpt); 
+                formData.append('nombre', nombre);
+                formData.append('descripcion', descripcion);
+
+                let actionURL = '/actualizar-departamento';
+                if (idDpt == null) {
+                    actionURL = '/guardar-departamento';
+                }
+    
+                // Realizar una solicitud POST al servidor para actualizar los datos del departamento
+                fetch(actionURL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Departamento actualizado correctamente');
+                        mostrarSnackbar('Datos guardados correctamente', '');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 4000);
+                    } else {
+                        console.error('Error al actualizar los datos del departamento');
+                    }
+                })
+                .catch(error => console.error('Error al enviar la solicitud:', error));
+            });
+    
+            // Función para obtener un parámetro de la URL por nombre
+            function obtenerParametroDeURL(nombre) {
+                const parametrosURL = new URLSearchParams(window.location.search);
+                return parametrosURL.get(nombre);
+            }
+        });
+    </script>
+    
+</body>
+
+</html>

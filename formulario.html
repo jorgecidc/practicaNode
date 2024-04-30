@@ -17,6 +17,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
     <meta name="msapplication-TileColor" content="#112233" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
@@ -195,7 +196,7 @@
             <div id="departamentoField" class="pc-12 tb-12 mv-12">
                 <div class="pix-campo">
                     <label for="departamento">Departamento</label><br>
-                    <input  type="text" readonly id="departamentoPrellenado">Nombre del Departamento Prerellenado</input>
+                    <input  type="hidden" readonly id="departamentoPrellenado">Nombre del Departamento Prerellenado</input>
                     <select name="departamento" id="departamento">
                         <!-- Options will be dynamically filled by JavaScript -->
                     </select>
@@ -234,6 +235,7 @@
                     document.getElementById('fotoEmpleado').src = `./img/${empleado[0].IMG}`;
                     document.getElementById('imagenNombre').textContent = `${empleado[0].IMG}`;
                     document.getElementById('departamentoPrellenado').value = empleado[0].DEPARTAMENTO;
+                    cargarCampos();
                     // Actualizar contadores de caracteres
                     actualizarContadores();
                 })
@@ -241,7 +243,7 @@
         }
 
         // Función para prellenar el formulario con los datos del empleado
-function prellenarFormulario() {
+        function prellenarFormulario() {
     // Obtener el ID del empleado de la URL
     const idEmpleado = obtenerParametroURL('id');
     if (idEmpleado) {
@@ -263,6 +265,9 @@ function prellenarFormulario() {
             document.getElementById('adjuntarImagen').style.display = 'block';
             document.getElementById('eliminar-imagen').style.display = 'none';
         }
+        else{
+            agregarClaseRelleno;
+        }
     }
     fetch('/datos_departamentos')
         .then(response => response.json())
@@ -275,14 +280,21 @@ function prellenarFormulario() {
                 option.textContent = departamento.NOMBRE;
                 selectDepartamento.appendChild(option);
             });
-            
-            // Obtener el departamento del empleado
-            const idDepartamentoEmpleado = obtenerDepartamentoEmpleado(idEmpleado);
-            // Preseleccionar el departamento del empleado en el formulario
-            selectDepartamento.value = idDepartamentoEmpleado;
+
+            // Obtener el nombre del departamento prerellenado
+            const nombreDepartamentoPrellenado = document.getElementById('departamentoPrellenado').value;
+
+            // Buscar el ID del departamento prerellenado en los datos de departamentos
+            const departamentoPrellenado = departamentos.find(dep => dep.NOMBRE === nombreDepartamentoPrellenado);
+
+            // Si se encuentra el departamento prerellenado, seleccionarlo en el campo select
+            if (departamentoPrellenado) {
+                selectDepartamento.value = departamentoPrellenado.ID;
+            }
         })
         .catch(error => console.error('Error al obtener departamentos:', error));
 }
+
 
 // Función para obtener el departamento del empleado
 function obtenerDepartamentoEmpleado(idEmpleado) {
@@ -460,6 +472,7 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
             }
         });
     </script>
+    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.js"></script>

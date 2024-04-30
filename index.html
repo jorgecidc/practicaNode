@@ -34,7 +34,7 @@
             bottom: 0;
             background-color: #fff; /* Cambia el color de fondo según tu preferencia */
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el menú */
-            z-index: 1000; /* Asegura que el menú esté por encima de otros elementos */
+            z-index: 10; /* Asegura que el menú esté por encima de otros elementos */
         }
         #contenido {
             margin-left: 322px; /* Ancho del menú */
@@ -45,7 +45,24 @@
     <meta name="robots" content="noindex nofollow">
 </head>
 <body>
-    
+    <header>
+        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i
+                    class="far fa-arrow-left"></i></a></div>
+        <div>
+            <a class="pix-menu pix-menu--spring pix-boton-oculto">
+                <span class="pix-menu-box">
+                    <span class="pix-menu-inner"></span>
+                </span>
+            </a>
+        </div>
+        <div>
+            <a id="btnPixContextual" class="btn-header pix-btn-mini-menu" href="#"><i class="far fa-ellipsis-v"></i></a>
+            <div class="pix-mini-menu">
+                <a href="/pix-admin/mi-cuenta"><i class="fas fa-user"></i>Mi cuenta</a>
+                <a href="/login.aspx?logout=1"><i class="fas fa-power-off"></i>Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
 
     
     <div id="contenedorPrincipal">
@@ -199,5 +216,12 @@
         // Llamar a la función obtenerDatosEmpleados al cargar la página
         window.onload = obtenerDatosEmpleados;
     </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js?v=01022023"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-ficheros.js?v=31082022"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.fancytree@2.36.1/dist/modules/jquery.fancytree.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
 </body>
 </html>
