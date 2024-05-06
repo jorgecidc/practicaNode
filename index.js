@@ -1,5 +1,6 @@
-//hola
 
+
+// Importar los módulos necesarios
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -9,6 +10,7 @@ const multer = require("multer");
 const { parse } = require('url');
 
 
+// Configurar almacenamiento para archivos con multer
 const storage = multer.diskStorage({
   destination: "./img",
   filename: function (req, file, cb) {
@@ -51,6 +53,7 @@ connection.connect((err) => {
   console.log("Conexión establecida con la base de datos");
 });
 
+// Crear servidor HTTP
 const server = http.createServer((req, res) => {
   const { pathname } = url.parse(req.url);
 
@@ -89,6 +92,8 @@ const server = http.createServer((req, res) => {
         }
       );
     });
+
+    // Manejar la solicitud para marcar un empleado como eliminado
   } else if (pathname === "/eliminar-departamento" && req.method === "DELETE") {
     console.log("Solicitud para eliminar departamento recibida");
 
@@ -124,6 +129,8 @@ const server = http.createServer((req, res) => {
       );
     });
   }
+
+  // Manejar la solicitud para sacar los datos de los empleados
  else if (pathname === "/datos_empleados" && req.method === "GET") {
     console.log("Solicitud de datos de empleados recibida");
 
@@ -143,6 +150,8 @@ const server = http.createServer((req, res) => {
         res.end(responseData);
       }
     );
+
+    // Manejar la solicitud para sacar los datos de los departamentos
   } else if (pathname === "/datos_departamentos" && req.method === "GET") {
     console.log("Solicitud de datos de departamentos recibida");
   
@@ -189,6 +198,8 @@ const server = http.createServer((req, res) => {
       res.writeHead(400);
       res.end("ID de departamento no proporcionado");
     }
+
+    // Manejar la solicitud para sacar los datos del empleado con id
   } else if (pathname === "/datos_empleado" && req.method === "GET") {
     const queryObject = url.parse(req.url, true).query;
     const idEmpleado = queryObject.id;
@@ -216,6 +227,8 @@ const server = http.createServer((req, res) => {
       res.writeHead(400);
       res.end("ID de empleado no proporcionado");
     }
+
+    // Manejar la solicitud para guardar empleados
   } else if (pathname === "/guardar-empleado") {
     console.log("Solicitud para guardar empleado recibida");
   
@@ -251,6 +264,8 @@ const server = http.createServer((req, res) => {
       );
     });
   } 
+
+  // Manejar la solicitud para guardar departamentos 
   else if (pathname === "/guardar-departamento") {
     console.log("Solicitud para guardar departamento recibida");
   
@@ -424,6 +439,7 @@ else {
   }
 });
 
+// Definir el puerto en el que escucha el servidor
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
