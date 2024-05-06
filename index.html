@@ -19,7 +19,6 @@
     <meta name="msapplication-TileColor" content="#112233">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/custom.css">
-    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
     <style>
         /* Estilos CSS para colocar el menú a la izquierda */
         #contenedorPrincipal {
@@ -110,46 +109,108 @@
         </div>
     </div>
     <script>
-        // Función para renderizar los datos de los empleados
-        function renderizarEmpleados(data) {
-            const datosEmpleadosDiv = document.getElementById('datosEmpleados');
-            datosEmpleadosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
+const marcadosAdicionales = [];
 
-            // Iterar sobre los datos de los empleados y agregarlos al DOM
-            data.forEach(empleado => {
-                const empleadoElement = document.createElement('div');
-                empleadoElement.innerHTML = `
-                    <div class="pix-registro">
-                        <div class="pix-registro-imagen">
-                            <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
-                        </div>
-                        <div class="pix-registro-contenido">
-                            <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
-                                <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
-                            </a>
-                            <span class="pix-marcado-adicional" style="color:#607D8B;background-color:#ECEFF1;"><i class="fas fa-tasks-alt"></i> 2 tarea(s)</span>
-                        </div>
-                        
-                        <div class="pix-registro-acciones">
-                            <div>
-                                <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                datosEmpleadosDiv.appendChild(empleadoElement);
-            });
+// Agregar marcado adicional para Mujer
+marcadosAdicionales.push({
+    icono: 'fas fa-venus',
+    texto: 'Mujer',
+    color: '#ff69b4',
+    colorTexto: '#fff',
+    condicion: empleado => empleado.SEXO === 1
+});
+
+// Agregar marcado adicional para Hombre
+marcadosAdicionales.push({
+    icono: 'fas fa-mars',
+    texto: 'Hombre',
+    color: '#0077cc',
+    colorTexto: '#fff',
+    condicion: empleado => empleado.SEXO === 2
+});
+
+// Agregar marcado adicional para Departamento
+marcadosAdicionales.push({
+    icono: 'fas fa-building',
+    texto: empleado => empleado.DEPARTAMENTO,
+    color: '#ff0000',
+    colorTexto: '#fff',
+    condicion: () => true
+});
+
+// Agregar marcado adicional para Teléfono
+marcadosAdicionales.push({
+    icono: 'fas fa-phone',
+    texto: empleado => empleado.TELEFONO,
+    color: '#00ff00',
+    colorTexto: '#000',
+    condicion: empleado => empleado.TELEFONO
+});
+
+// Agregar marcado adicional para Fecha de nacimiento
+marcadosAdicionales.push({
+    icono: 'fas fa-birthday-cake',
+    texto: empleado => empleado.FECHA_NACIMIENTO,
+    color: '#ff4500',
+    colorTexto: '#fff',
+    condicion: empleado => empleado.FECHA_NACIMIENTO
+});
+
+
+// Función para generar los marcados adicionales según las condiciones
+function generarMarcadosAdicionales(empleado) {
+    const htmlMarcados = marcadosAdicionales
+        .filter(marcado => marcado.condicion(empleado))
+        .map(marcado => `
+            <span class="pix-marcado-adicional" style="color:${marcado.colorTexto};background-color:${marcado.color};">
+                <i class="${marcado.icono}"></i> ${typeof marcado.texto === 'function' ? marcado.texto(empleado) : marcado.texto}
+            </span>
+        `)
+        .join('');
+
+    return htmlMarcados;
+}
+
+// Función para renderizar los datos de los empleados
+function renderizarEmpleados(data) {
+    const datosEmpleadosDiv = document.getElementById('datosEmpleados');
+    datosEmpleadosDiv.innerHTML = '';
+
+    data.forEach(empleado => {
+        const empleadoElement = document.createElement('div');
+        empleadoElement.classList.add('pix-registro');
+
+        const marcadosHTML = generarMarcadosAdicionales(empleado);
+
+        empleadoElement.innerHTML = `
+            <div class="pix-registro-imagen">
+                <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
+            </div>
+            <div class="pix-registro-contenido">
+                <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
+                    <strong class="nombreEmpleado">${empleado.NOMBRE} ${empleado.APELLIDO}</strong>
+                </a>
+                ${marcadosHTML}
+            </div>
             
-            // Agregar evento click a los botones de menú desplegable
-            const botonesMenu = document.querySelectorAll('.pix-mini-menu');
-            botonesMenu.forEach(btn => {
-                btn.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const menu = this;
-                    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-                });
-            });
-        }
+            <div class="pix-registro-acciones">
+                <div>
+                    <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${empleado.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                </div>
+            </div>
+        `;
+        datosEmpleadosDiv.appendChild(empleadoElement);
+    });
+
+    const botonesMenu = document.querySelectorAll('.pix-mini-menu');
+    botonesMenu.forEach(btn => {
+        btn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const menu = this;
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        });
+    });
+}
 
         // Función para obtener los datos de los empleados y llamar a la función de renderizado
         function obtenerDatosEmpleados() {

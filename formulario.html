@@ -184,6 +184,15 @@
                     <div id="emailContador" class="pix-contador-caracteres">0/200</div>
                 </div>
             </div>
+            <div id="generoField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="genero">Género</label><br>
+                    <select name="genero" id="genero">
+                        <option value="2">Hombre</option>
+                        <option value="1">Mujer</option>
+                    </select>
+                </div>
+            </div>
             <div id="telefonoField" class="pc-12 tb-12 mv-12">
                 <div class="pix-campo">
                     <label for="telefono">Teléfono</label>
@@ -385,6 +394,7 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
             const telefono = document.getElementById('telefono').value;
             const imagen = document.getElementById('imagen').files[0];
             const departamento = document.getElementById('departamento').selectedOptions[0].textContent;
+            const genero = document.getElementById('genero').value;
 
             // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
             if (imagen && id) {
@@ -396,6 +406,7 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
                 formData.append('telefono', telefono);
                 formData.append('imagen', imagen);
                 formData.append('departamento', departamento);
+                formData.append('genero', genero);
 
                 // Enviar la solicitud al servidor con los datos del empleado para actualizar
                 fetch('/actualizar-empleado', {
@@ -428,6 +439,7 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
                 formData.append('telefono', telefono);
                 formData.append('imagen', imagen);
                 formData.append('departamento', departamento);
+                formData.append('genero', genero);
 
                 // Validar que los campos no estén vacíos
                 if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {
