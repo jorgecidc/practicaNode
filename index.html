@@ -116,18 +116,12 @@
                     <i class="fas fa-user"></i>Empleados
                 </div>
                 <div class="pix-fila">
-                    <form id="formBusqueda">
-                        <div class="pc-10 tb-12 mv-12">
-                            <div class="pix-campo">
-                                <label for="txtFiltroTexto">Buscar texto...</label>
-                                <input id="txtFiltroTexto" type="search" name="q">
-                            </div>
+                    <div class="pc-10 tb-12 mv-12">
+                        <div class="pix-campo">
+                            <label for="txtFiltroTexto">Buscar texto...</label>
+                            <input id="txtFiltroTexto" type="search" name="q" oninput="buscarPorNombre()">
                         </div>
-                        <div class="pc-2 tb-12 mv-12">
-                            <button class="pix-btn pix-btn-filtros-busqueda" type="submit"><i
-                                    class="far fa-search"></i>Buscar</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="pix-resultados-registros" id="datosEmpleados">
                     <!-- Aquí se insertarán los datos de los empleados -->
@@ -333,33 +327,30 @@
                 });
         }
 
-        // Función para buscar por nombre
-        function buscarPorNombre() {
-            const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
-            if (textoBusqueda === '') {
-                obtenerDatosEmpleados();
-            } else {
-                fetch('/datos_empleados')
-                    .then(response => response.json())
-                    .then(data => {
-                        const empleadosFiltrados = data.filter(empleado => {
-                            return empleado.NOMBRE.toLowerCase().includes(textoBusqueda);
-                        });
+function buscarPorNombre() {
+    const textoBusqueda = document.getElementById('txtFiltroTexto').value.trim().toLowerCase();
+    if (textoBusqueda === '') {
+        obtenerDatosEmpleados();
+    } else {
+        fetch('/datos_empleados')
+            .then(response => response.json())
+            .then(data => {
+                const empleadosFiltrados = data.filter(empleado => {
 
-                        renderizarEmpleados(empleadosFiltrados);
-                    })
-                    .catch(error => console.error('Error al obtener datos de empleados:', error));
-            }
-        }
+                    return empleado.NOMBRE.toLowerCase().includes(textoBusqueda) || empleado.APELLIDO.toLowerCase().includes(textoBusqueda);
+                });
+
+                renderizarEmpleados(empleadosFiltrados);
+            })
+            .catch(error => console.error('Error al obtener datos de empleados:', error));
+    }
+}
+
+
 
         // Llamar a la función obtenerDatosEmpleados al cargar la página
         window.onload = obtenerDatosEmpleados;
 
-        // Evitar que el formulario se envíe al hacer clic en el botón de búsqueda
-        document.getElementById('formBusqueda').addEventListener('submit', function (event) {
-            event.preventDefault();
-            buscarPorNombre();
-        });
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>

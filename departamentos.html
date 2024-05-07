@@ -73,6 +73,7 @@
             </div>
         </div>
     </header>
+    
     <div id="contenedorPrincipal">
         <div id="pix-contenedor-menu">
             <div id="pix-contenedor-menu">
@@ -103,11 +104,8 @@
                     <div class="pc-10 tb-12 mv-12">
                         <div class="pix-campo">
                             <label for="txtFiltroTexto">Buscar texto...</label>
-                            <input id="txtFiltroTexto" type="search" name="q">
+                            <input id="txtFiltroTexto" type="search" name="q" oninput="buscarPorNombre()">
                         </div>
-                    </div>
-                    <div class="pc-2 tb-12 mv-12">
-                        <a class="pix-btn pix-btn-filtros-busqueda" href="#" onclick="buscarPorNombre()"><i class="far fa-search"></i>Buscar</a>
                     </div>
                 </div>
                 <div class="pix-resultados-registros" id="datosDepartamentos">
@@ -199,7 +197,6 @@
                         const departamentosFiltrados = data.filter(departamento => {
                             return departamento.NOMBRE.toLowerCase().includes(textoBusqueda);
                         });
-
                         renderizarDepartamentos(departamentosFiltrados);
                     })
                     .catch(error => console.error('Error al obtener datos de departamentos:', error));
@@ -209,5 +206,12 @@
         // Llamar a la función obtenerDatosDepartamentos al cargar la página
         window.onload = obtenerDatosDepartamentos;
     </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-menu-deslizante.js"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js?v=01022023"></script>
+    <script src="//cdn.pixelinnova.com/pixelone/pix-ficheros.js?v=31082022"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.fancytree@2.36.1/dist/modules/jquery.fancytree.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
 </body>
 </html>

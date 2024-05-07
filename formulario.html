@@ -18,6 +18,8 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
     <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.0/classic/ckeditor.js"></script>
+
     <meta name="msapplication-TileColor" content="#112233" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
@@ -150,6 +152,31 @@
             </div>
         </div>
     </header>
+    <div id="contenedorPrincipal">
+        <div id="pix-contenedor-menu">
+            <div id="pix-contenedor-menu">
+                <aside id="secNav">
+                    <nav>
+                        <div id="divPerfil">
+                            <a href="/pix-admin/mi-cuenta/" data-pix-tooltip="Ir a mi cuenta">
+                                <div id="divPerfilFondo"
+                                    style="background-image:url(https://oficinavirtual.pixelinnova.com/pix-admin/img/sistema/fondo-perfil.jpg?w=320&amp;h=160&amp;mode=crop&amp;autorotate=1)">
+                                </div>
+                                <img
+                                    src="https://oficinavirtual.pixelinnova.com/pix-admin/img/sistema/foto-perfil-3.jpg?w=110&amp;h=110&amp;mode=crop&amp;autorotate=1">
+                                <strong>Jorge Cid</strong>practicas.jorgecid@pixelinnova.com
+                            </a>
+                        </div>
+
+                        <ul>
+                            <li class="actual"><a href="index.html"><i class="fas fa-folder-tree"></i>Proyectos</a></li>
+                            <li><a href="departamentos.html"><i class="fas fa-comments"></i>Departamentos</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+        </div>
+        <div id="contenido">
     <form id="formularioEmpleado" enctype="multipart/form-data" action="">
         <div class="pix-tarjeta-titulo">
             <i class="fas fa-folder-tree"></i>Formulario
@@ -228,6 +255,13 @@
                     </select>
                 </div>
             </div>
+            <div id="descripcionField" class="pc-12 tb-12 mv-12">
+                <div class="pix-campo">
+                    <label for="descripcion">Descripción</label>
+                    <textarea name="descripcion" id="descripcion"></textarea>
+                </div>
+            </div>
+            
 
             <div class="pc-12 tb-12 mv-12">
                 <input name="ctl00$CPH_Acciones$btnGrabar" type="submit" id="btnGuardar"
@@ -235,9 +269,12 @@
             </div>
         </div>
     </form>
+        </div>
+    </div>
     
 
     <script>
+        var editorCK;
         function goBack() {
             window.location.href = "/index.html"; // Redirigir siempre al index.html
         }
@@ -249,29 +286,47 @@
         }
 
         // Función para obtener los datos del empleado con el ID proporcionado
-        function obtenerDatosEmpleadoPorID(id) {
-            fetch(`/datos_empleado?id=${id}`)
-                .then(response => response.json())
-                .then(empleado => {
-                    // Rellenar el formulario con los datos del empleado
-                    document.getElementById('nombre').value = empleado[0].NOMBRE;
-                    document.getElementById('apellido').value = empleado[0].APELLIDO;
-                    document.getElementById('email').value = empleado[0].EMAIL;
-                    document.getElementById('telefono').value = empleado[0].TELEFONO;
-                    document.getElementById('fotoEmpleado').src = `./img/${empleado[0].IMG}`;
-                    document.getElementById('imagenNombre').textContent = `${empleado[0].IMG}`;
-                    document.getElementById('departamentoPrellenado').value = empleado[0].DEPARTAMENTO;
-                    cargarCampos();
-                    // Actualizar contadores de caracteres
-                    actualizarContadores();
-                })
-                .catch(error => console.error('Error al obtener datos del empleado:', error));
-        }
+        // Función para obtener los datos del empleado con el ID proporcionado
+function obtenerDatosEmpleadoPorID(id) {
+    fetch(`/datos_empleado?id=${id}`)
+        .then(response => response.json())
+        .then(empleado => {
+            // Rellenar el formulario con los datos del empleado
+            document.getElementById('nombre').value = empleado[0].NOMBRE;
+            document.getElementById('apellido').value = empleado[0].APELLIDO;
+            document.getElementById('email').value = empleado[0].EMAIL;
+            document.getElementById('telefono').value = empleado[0].TELEFONO;
+            document.getElementById('fotoEmpleado').src = `./img/${empleado[0].IMG}`;
+            document.getElementById('imagenNombre').textContent = `${empleado[0].IMG}`;
+            document.getElementById('departamentoPrellenado').value = empleado[0].DEPARTAMENTO;
+            
+            // Preenlazar el CKEditor con la descripción del empleado
+            const descripcionEmpleado = empleado[0].DESCRIPCION;
+if (descripcionEmpleado) {
+    ClassicEditor
+        .create(document.querySelector('#descripcion'), {
+            initialData: descripcionEmpleado
+        })
+        .then(editor => {
+            console.log('Editor de descripción creado y prellenado correctamente');
+            editorCK = editor;
+        })
+        .catch(error => {
+            console.error('Error al crear el editor de descripción:', error);
+        });
+}
+
+            cargarCampos();
+            // Actualizar contadores de caracteres
+            actualizarContadores();
+        })
+        .catch(error => console.error('Error al obtener datos del empleado:', error));
+}
+
 
         // Función para prellenar el formulario con los datos del empleado
         function prellenarFormulario() {
     // Obtener el ID del empleado de la URL
-
     const idEmpleado = obtenerParametroURL('id');
     if (idEmpleado) {
         obtenerDatosEmpleadoPorID(idEmpleado);
@@ -285,8 +340,8 @@
         // Ocultar la imagen si el ID es nulo
         document.getElementById('fotoEmpleado').style.display = 'none';
 
-        // Verificar si los campos del formulario están vacíos
-        const camposVacios = Array.from(document.querySelectorAll('input[type="text"], input[type="email"]')).some(input => input.value.trim() === '');
+        // Verificar si los campos del formulario están vacíos, incluyendo la descripción
+        const camposVacios = Array.from(document.querySelectorAll('input[type="text"], input[type="email"], textarea')).some(input => input.value.trim() === '');
         if (camposVacios) {
             // Mostrar el campo de adjuntar imagen si los campos están vacíos
             document.getElementById('adjuntarImagen').style.display = 'block';
@@ -296,11 +351,22 @@
             if (nombre) {
                 document.getElementById('imagenNombre').textContent = nombre.charAt(0).toUpperCase();
             }
+            // Inicializar CKEditor en el campo de descripción
+            ClassicEditor
+                .create(document.querySelector('#descripcion'))
+                .then(editor => {
+                    console.log('Editor de descripción creado correctamente');
+                    editorCK = editor;
+                })
+                .catch(error => {
+                    console.error('Error al crear el editor de descripción:', error);
+                });
         } else {
             agregarClaseRelleno();
         }
     }
-    }
+}
+
     fetch('/datos_departamentos')
         .then(response => response.json())
         .then(departamentos => {
@@ -399,7 +465,9 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
     }
 });
 
-
+function obtenerContenidoCKEditor() {
+    return editorCK.getData();
+}
 
 
 
@@ -423,6 +491,9 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
             const imagen = document.getElementById('imagen').files[0];
             const departamento = document.getElementById('departamento').selectedOptions[0].textContent;
             const genero = document.getElementById('genero').value;
+            const descripcion = obtenerContenidoCKEditor();
+
+
 
             // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
             if (imagen && id) {
@@ -434,6 +505,8 @@ formData.append('email', email);
 formData.append('telefono', telefono);
 formData.append('departamento', departamento);
 formData.append('genero', genero);
+formData.append('descripcion', descripcion);
+
 
 // Verificar si hay una imagen adjunta
 if (imagen) {
@@ -473,6 +546,8 @@ if (imagen) {
                 formData.append('imagen', imagen);
                 formData.append('departamento', departamento);
                 formData.append('genero', genero);
+                formData.append('descripcion', descripcion);
+
 
                 // Validar que los campos no estén vacíos
                 if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' || telefono.trim() === '') {

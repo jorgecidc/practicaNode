@@ -240,12 +240,12 @@ const server = http.createServer((req, res) => {
         return;
       }
   
-      const { nombre, apellido, email, telefono, departamento, genero } = req.body;
+      const { nombre, apellido, email, telefono, departamento, genero, descripcion } = req.body;
       let imagen = req.file ? req.file.filename : null;
   
       connection.query(
-        'INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, DEPARTAMENTO, SEXO, SINO) VALUES (?, ?, ?, ?, ?, ?,?, 1)',
-        [nombre, apellido, email, telefono, imagen, departamento, genero],
+        'INSERT INTO empleado (NOMBRE, APELLIDO, EMAIL, TELEFONO, IMG, DEPARTAMENTO, SEXO, DESCRIPCION, SINO) VALUES (?, ?, ?, ?, ?, ?,?,?, 1)',
+        [nombre, apellido, email, telefono, imagen, departamento, genero, descripcion],
         (error, results) => {
           if (error) {
             console.error(
@@ -312,7 +312,7 @@ const server = http.createServer((req, res) => {
       }
   
       try {
-        const { id, nombre, apellido, email, telefono, departamento , genero} = req.body;
+        const { id, nombre, apellido, email, telefono, departamento , genero, descripcion} = req.body;
         let imagen;
   
         connection.query(
@@ -328,11 +328,11 @@ const server = http.createServer((req, res) => {
   
             imagen = req.file ? req.file.filename : results[0].IMG;
   
-            console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen, departamento });
+            console.log("Datos a actualizar:", { id, nombre, apellido, email, telefono, imagen, departamento, genero, descripcion });
   
             connection.query(
-              'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? , DEPARTAMENTO = ?, SEXO = ? WHERE ID = ?',
-              [nombre, apellido, email, telefono, imagen, departamento, genero, id],
+              'UPDATE empleado SET NOMBRE = ? , APELLIDO = ? , EMAIL = ? , TELEFONO = ? , IMG = ? , DEPARTAMENTO = ?, SEXO = ?, DESCRIPCION = ? WHERE ID = ?',
+              [nombre, apellido, email, telefono, imagen, departamento, genero, descripcion,  id],
               (error, results) => {
                 if (error) {
                   console.error(

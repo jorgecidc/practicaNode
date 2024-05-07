@@ -71,6 +71,27 @@
             font-size: 12px;
             color: #000;
         }
+        /* Estilos CSS para colocar el menú a la izquierda */
+        #contenedorPrincipal {
+            display: flex;
+            flex-direction: row;
+        }
+        #pix-contenedor-menu {
+            width: 200px; /* Ancho del menú */
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color: #fff; /* Cambia el color de fondo según tu preferencia */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el menú */
+            z-index: 10; /* Asegura que el menú esté por encima de otros elementos */
+        }
+        #contenido {
+            margin-left: 322px; /* Ancho del menú */
+            width: calc(100% - 200px); /* Restar el ancho del menú */
+            padding-left: 16px;
+            padding-top: 16px;
+        }
     </style>
     <meta name="robots" content="noindex nofollow">
 </head>
@@ -94,6 +115,31 @@
             </div>
         </div>
     </header>
+    <div id="contenedorPrincipal">
+        <div id="pix-contenedor-menu">
+            <div id="pix-contenedor-menu">
+                <aside id="secNav">
+                    <nav>
+                        <div id="divPerfil">
+                            <a href="/pix-admin/mi-cuenta/" data-pix-tooltip="Ir a mi cuenta">
+                                <div id="divPerfilFondo"
+                                    style="background-image:url(https://oficinavirtual.pixelinnova.com/pix-admin/img/sistema/fondo-perfil.jpg?w=320&amp;h=160&amp;mode=crop&amp;autorotate=1)">
+                                </div>
+                                <img
+                                    src="https://oficinavirtual.pixelinnova.com/pix-admin/img/sistema/foto-perfil-3.jpg?w=110&amp;h=110&amp;mode=crop&amp;autorotate=1">
+                                <strong>Jorge Cid</strong>practicas.jorgecid@pixelinnova.com
+                            </a>
+                        </div>
+
+                        <ul>
+                            <li class="actual"><a href="index.html"><i class="fas fa-folder-tree"></i>Proyectos</a></li>
+                            <li><a href="departamentos.html"><i class="fas fa-comments"></i>Departamentos</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+        </div>
+        <div id="contenido">
     <form id="formularioDepartamento" action="">
         <div class="pix-tarjeta-titulo">
             <i class="fas fa-folder-tree"></i> Formulario de Departamento
@@ -117,6 +163,8 @@
             </div>
         </div>
     </form>
+        </div>
+    </div>
 
     <script>
         function goBack() {
