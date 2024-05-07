@@ -39,16 +39,26 @@
         #contenido {
             margin-left: 322px; /* Ancho del menú */
             width: calc(100% - 200px); /* Restar el ancho del menú */
+            padding-left: 16px;
+            padding-top: 16px;
         }
-        /* Fin de estilos CSS para colocar el menú a la izquierda */
+        @media only screen and (min-width: 801px) {
+    body {
+        background-image: url(/img/geometry2.png);
+        background-attachment: fixed;
+    }
+}
+
     </style>
     <meta name="robots" content="noindex nofollow">
 </head>
 <body>
     <header>
-        <div><a class="btn-header btn-header-volver" href="#" data-pix-toltip="Volver" onclick="goBack()"><i
-                    class="far fa-arrow-left"></i></a></div>
         <div>
+            <a id="pixBtnLogo" href="/pix-admin" data-pix-toltip="Ir a inicio">
+                <img src="https://oficinavirtual.pixelinnova.com/pix-admin/ficheros/1/oficina-virtual.svg">
+            </a>
+        </div>
             <a class="pix-menu pix-menu--spring pix-boton-oculto">
                 <span class="pix-menu-box">
                     <span class="pix-menu-inner"></span>

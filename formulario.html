@@ -22,6 +22,33 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="stylesheet" href="css/custom.css">
     <style>
+        /* Estilos CSS para colocar el menú a la izquierda */
+        #contenedorPrincipal {
+            display: flex;
+            flex-direction: row;
+        }
+        #pix-contenedor-menu {
+            width: 200px; /* Ancho del menú */
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background-color: #fff; /* Cambia el color de fondo según tu preferencia */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el menú */
+            z-index: 10; /* Asegura que el menú esté por encima de otros elementos */
+        }
+        #contenido {
+            margin-left: 322px; /* Ancho del menú */
+            width: calc(100% - 200px); /* Restar el ancho del menú */
+            padding-left: 16px;
+            padding-top: 16px;
+        }
+        @media only screen and (min-width: 801px) {
+    body {
+        background-image: url(img/geometry2.png);
+        background-attachment: fixed;
+    }
+}
         form {
             margin-left: 20px;
             margin-top: 20px;
@@ -82,26 +109,16 @@
         .eliminar-imagen {
             position: absolute;
             top: 0;
-            /* Ajusta la posición vertical */
             right: 0;
-            /* Ajusta la posición horizontal */
             background-color: red;
-            /* Cambia el color de fondo a rojo */
             color: white;
-            /* Cambia el color del texto a blanco */
             border-radius: 50%;
-            /* Hace que el botón sea redondeado */
             width: 25px;
-            /* Tamaño del botón */
             height: 25px;
-            /* Tamaño del botón */
             line-height: 25px;
-            /* Centra el contenido verticalmente */
             text-align: center;
-            /* Centra el contenido horizontalmente */
             cursor: pointer;
             z-index: 1;
-            /* Asegura que esté por encima de la imagen */
         }
 
 
@@ -145,6 +162,7 @@
                         <img id="fotoEmpleado" src="#" alt="Foto del empleado">
                         <div id="imagenNombre" class="imagen-nombre"></div>
                     </div>
+                    
 
                     <div class="pix-campo cargado pix-label-fija" id="adjuntarImagen"><label
                             id="CPH_Cuerpo_rptCampos_miLabel_1">Imagen</label>
@@ -207,7 +225,6 @@
                     <label for="departamento">Departamento</label><br>
                     <input  type="hidden" readonly id="departamentoPrellenado">Nombre del Departamento Prerellenado</input>
                     <select name="departamento" id="departamento">
-                        <!-- Options will be dynamically filled by JavaScript -->
                     </select>
                 </div>
             </div>
@@ -273,10 +290,15 @@
             // Mostrar el campo de adjuntar imagen si los campos están vacíos
             document.getElementById('adjuntarImagen').style.display = 'block';
             document.getElementById('eliminar-imagen').style.display = 'none';
+            // Obtener la inicial del nombre y establecerla como contenido del div imagenNombre
+            const nombre = document.getElementById('nombre').value.trim();
+            if (nombre) {
+                document.getElementById('imagenNombre').textContent = nombre.charAt(0).toUpperCase();
+            }
+        } else {
+            agregarClaseRelleno();
         }
-        else{
-            agregarClaseRelleno;
-        }
+    }
     }
     fetch('/datos_departamentos')
         .then(response => response.json())
@@ -302,7 +324,7 @@
             }
         })
         .catch(error => console.error('Error al obtener departamentos:', error));
-}
+
 
 
 // Función para obtener el departamento del empleado
@@ -359,17 +381,22 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
                 };
                 reader.readAsDataURL(file);
             } else {
-                // Limpiar la previsualización si no se selecciona ningún archivo
-                document.getElementById('fotoEmpleado').src = '';
-                document.getElementById('imagenNombre').textContent = '';
-                document.getElementById('imagenPreview').style.display = 'none';
-                // Ocultar el campo de adjuntar imagen si no se adjunta ningún archivo
-                document.getElementById('adjuntarImagen').style.display = 'block';
-                // Cambiar la visualización de fotoEmpleado de block a none
-                document.getElementById('fotoEmpleado').style.display = 'none';
-                document.getElementsByClassName('eliminar-imagen').style.display = 'none';
-            }
-        });
+        // Limpiar la previsualización si no se selecciona ningún archivo
+        document.getElementById('fotoEmpleado').src = '';
+        document.getElementById('imagenNombre').textContent = '';
+        document.getElementById('imagenPreview').style.display = 'none';
+        // Ocultar el campo de adjuntar imagen si no se adjunta ningún archivo
+        document.getElementById('adjuntarImagen').style.display = 'block';
+        // Cambiar la visualización de fotoEmpleado de block a none
+        document.getElementById('fotoEmpleado').style.display = 'none';
+        document.getElementById('eliminar-imagen').style.display = 'none';
+        // Obtener la inicial del nombre y establecerla como contenido del div imagenNombre
+        const nombre = document.getElementById('nombre').value.trim();
+        if (nombre) {
+            document.getElementById('imagenNombre').textContent = nombre.charAt(0).toUpperCase();
+        }
+    }
+});
 
 
 
@@ -378,11 +405,11 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
 
         // Función para eliminar la imagen y mostrar nuevamente el campo de adjuntar imagen
         function eliminarImagen() {
-            document.getElementById('fotoEmpleado').src = '';
-            document.getElementById('imagen').value = '';
-            document.getElementById('imagenPreview').style.display = 'none';
-            document.getElementById('adjuntarImagen').style.display = 'block'; // Mostrar el campo de adjuntar imagen
-        }
+    document.getElementById('fotoEmpleado').src = '';
+    document.getElementById('imagen').value = '';
+    document.getElementById('imagenPreview').style.display = 'none';
+    document.getElementById('adjuntarImagen').style.display = 'block'; // Mostrar el campo de adjuntar imagen
+}
 
         // Manejar el envío del formulario
         document.getElementById('formularioEmpleado').addEventListener('submit', function (event) {
@@ -399,14 +426,19 @@ function obtenerDepartamentoEmpleado(idEmpleado) {
             // Verificar si se ha adjuntado un archivo y si hay un ID de empleado presente
             if (imagen && id) {
                 const formData = new FormData();
-                formData.append('id', id);
-                formData.append('nombre', nombre);
-                formData.append('apellido', apellido);
-                formData.append('email', email);
-                formData.append('telefono', telefono);
-                formData.append('imagen', imagen);
-                formData.append('departamento', departamento);
-                formData.append('genero', genero);
+formData.append('id', id);
+formData.append('nombre', nombre);
+formData.append('apellido', apellido);
+formData.append('email', email);
+formData.append('telefono', telefono);
+formData.append('departamento', departamento);
+formData.append('genero', genero);
+
+// Verificar si hay una imagen adjunta
+if (imagen) {
+    formData.append('imagen', imagen);
+}
+
 
                 // Enviar la solicitud al servidor con los datos del empleado para actualizar
                 fetch('/actualizar-empleado', {
