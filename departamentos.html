@@ -22,6 +22,10 @@
     <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
     <style>
         /* Estilos CSS para colocar el menú a la izquierda */
+        .pix-registro-imagen{
+            width: 110px;
+            height: 110px;
+        }
         #contenedorPrincipal {
             display: flex;
             flex-direction: row;
@@ -116,32 +120,119 @@
         </div>
     </div>
     <script>
-        // Función para renderizar los datos de los departamentos
-        function renderizarDepartamentos(data) {
-            const datosDepartamentosDiv = document.getElementById('datosDepartamentos');
-            datosDepartamentosDiv.innerHTML = ''; // Limpiar el contenido anterior (si lo hay)
 
-            // Iterar sobre los datos de los departamentos y agregarlos al DOM
-            data.forEach(departamento => {
-                const departamentoElement = document.createElement('div');
-                departamentoElement.innerHTML = `
-                    <div class="pix-registro">
-                        <div class="pix-registro-contenido">
-                            <a href="formularioDepartamentos.html?id=${departamento.ID}" class="enlaceDepartamento">
-                                <strong class="nombreDepartamento">${departamento.NOMBRE}</strong>
-                            </a>
-                            <span class="descripcionDepartamento">${departamento.DESCRIPCION}</span>
-                        </div>
-                        <div class="pix-registro-acciones">
-                            <div>
-                                <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${departamento.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                datosDepartamentosDiv.appendChild(departamentoElement);
-            });
+        // Función para obtener la cantidad de palabras en la descripción
+
+// Array de marcados adicionales
+
+
+        const coloresPorLetra = {
+    'A': '#ff0000', // Rojo
+    'B': '#00ff00', // Verde
+    'C': '#0000ff', // Azul
+    'D': '#ffff00', // Amarillo
+    'E': '#ff00ff', // Magenta
+    'F': '#00ffff', // Cyan
+    'G': '#ff9900', // Naranja
+    'H': '#9966cc', // Morado
+    'I': '#33cc33', // Verde lima
+    'J': '#ff6666', // Rosa
+    'K': '#009999', // Verde azulado
+    'L': '#ffcc00', // Amarillo oscuro
+    'M': '#6600cc', // Púrpura
+    'N': '#ff3300', // Rojo anaranjado
+    'O': '#6699ff', // Azul cielo
+    'P': '#cc6600', // Naranja oscuro
+    'Q': '#66ccff', // Azul claro
+    'R': '#ff3399', // Rosa oscuro
+    'S': '#339966', // Verde oscuro
+    'T': '#ff99cc', // Rosa claro
+    'U': '#3366ff', // Azul medio
+    'V': '#996600', // Marrón
+    'W': '#66ff33', // Verde claro
+    'X': '#ff6633', // Naranja claro
+    'Y': '#660033', // Púrpura oscuro
+    'Z': '#99ccff'  // Azul pálido
+};
+
+// Función para obtener el color de fondo según la primera letra del nombre
+function obtenerColorFondo(letra) {
+    // Convertimos la letra a mayúscula para buscarla en el objeto
+    const letraMayuscula = letra.toUpperCase();
+
+    // Si la letra está definida en coloresPorLetra, se retorna su color, de lo contrario, se usa un color predeterminado
+    return coloresPorLetra[letraMayuscula] || '#e0e0e0';
+}
+
+const marcadosAdicionales = [];
+
+
+        // Agregar marcado adicional para Departamento
+        marcadosAdicionales.push({
+    icono: 'fas fa-language',
+    texto: departamento => `Palabras descripcion: ${departamento.DESCRIPCION.split(' ').length}`,
+    color: '#c8a2c8', // Amarillo pastel
+    colorTexto: '#000', // Color de texto oscuro para que sea legible
+    condicion: departamento => departamento.DESCRIPCION
+});
+
+
+
+
+        // Función para generar los marcados adicionales según las condiciones
+        function generarMarcadosAdicionales(empleado) {
+            const htmlMarcados = marcadosAdicionales
+                .filter(marcado => marcado.condicion(empleado))
+                .map(marcado => `
+            <span class="pix-marcado-adicional" style="color:${marcado.colorTexto};background-color:${marcado.color};">
+                <i class="${marcado.icono}"></i> ${typeof marcado.texto === 'function' ? marcado.texto(empleado) : marcado.texto}
+            </span>
+        `)
+                .join('');
+
+            return htmlMarcados;
         }
+        function renderizarDepartamentos(data) {
+    const datosDepartamentosDiv = document.getElementById('datosDepartamentos');
+    datosDepartamentosDiv.innerHTML = '';
+
+    data.forEach(departamento => {
+        const letraDepartamento = departamento.NOMBRE.charAt(0).toUpperCase();
+        const colorFondo = obtenerColorFondo(letraDepartamento);
+
+        const departamentoElement = document.createElement('div');
+        departamentoElement.classList.add('pix-registro');
+
+        const estiloDiv = `background-color: ${colorFondo}; width: 64px; height: 64px; display: inline-block; border-radius: 50%; line-height: 64px; color: #fff; text-align: center; font-size: 32px;`;
+        const imagenElement = `<span style="${estiloDiv}">${letraDepartamento}</span>`;
+
+        const marcadosHTML = generarMarcadosAdicionales(departamento);
+
+        departamentoElement.innerHTML = `
+            <div class="pix-registro-imagen" style="width:110px; height: 110px;">
+                <a href="formularioDepartamentos.html?id=${departamento.ID}">${imagenElement}</a>
+            </div>
+            <div class="pix-registro-contenido">
+                <a href="formularioDepartamentos.html?id=${departamento.ID}" class="enlaceDepartamento">
+                    <strong class="nombreDepartamento">${departamento.NOMBRE}</strong>
+                </a>
+                <span class="descripcionDepartamento">${departamento.DESCRIPCION}</span>
+                ${marcadosHTML}
+            </div>
+            <div class="pix-registro-acciones">
+                <div>
+                    <a href="#" class="pix-borrar-registro" onclick="confirmarEliminar(${departamento.ID})"><i class="fas fa-trash-alt"></i>Eliminar</a>
+                </div>
+            </div>
+        `;
+        datosDepartamentosDiv.appendChild(departamentoElement);
+    });
+}
+
+
+
+
+
 
         // Función para obtener los datos de los departamentos y llamar a la función de renderizado
         function obtenerDatosDepartamentos() {
