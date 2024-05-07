@@ -182,8 +182,45 @@ function generarMarcadosAdicionales(empleado) {
 
     return htmlMarcados;
 }
+const coloresPorLetra = {
+    'A': '#FF6961', 
+    'B': '#77DD77',
+    'C': '#AEC6CF',
+    'D': '#FFD700', 
+    'E': '#C23B22',
+    'F': '#F49AC2', 
+    'G': '#FF8C69', 
+    'H': '#B19CD9',
+    'I': '#77DD77', 
+    'J': '#FFD700', 
+    'K': '#FFD700', 
+    'L': '#FDFD96', 
+    'M': '#FF77FF', 
+    'N': '#FFA07A', 
+    'O': '#87CEEB',
+    'P': '#FFD700', 
+    'Q': '#FF69B4', 
+    'R': '#20B2AA',
+    'S': '#87CEFA', 
+    'T': '#FFB6C1', 
+    'U': '#FFD700',
+    'V': '#E0FFFF', 
+    'W': '#E6E6FA',
+    'X': '#F0E68C', 
+    'Y': '#FFE4C4', 
+    'Z': '#FAEBD7' 
+};
 
-// Función para renderizar los datos de los empleados
+
+
+function obtenerColorFondo(letra) {
+
+    const letraMayuscula = letra.toUpperCase();
+
+
+    return coloresPorLetra[letraMayuscula] || '#e0e0e0';
+}
+
 function renderizarEmpleados(data) {
     const datosEmpleadosDiv = document.getElementById('datosEmpleados');
     datosEmpleadosDiv.innerHTML = '';
@@ -194,9 +231,19 @@ function renderizarEmpleados(data) {
 
         const marcadosHTML = generarMarcadosAdicionales(empleado);
 
+        let imagenElement;
+        if (empleado.IMG !== null) {
+            imagenElement = `<img src="img/${empleado.IMG}" loading="lazy">`;
+        } else {
+            const nombreInicial = empleado.NOMBRE.charAt(0).toUpperCase();
+            const colorFondo = obtenerColorFondo(nombreInicial);
+            const estiloDiv = `background-color: ${colorFondo}; width: 64px; height: 64px; font-size: 50px; color: #555; border-radius: 50%; padding-left: 16px;`;
+            imagenElement = `<div style="${estiloDiv}">${nombreInicial}</div>`;
+        }
+
         empleadoElement.innerHTML = `
-            <div class="pix-registro-imagen">
-                <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}"><img src="img/${empleado.IMG}" loading="lazy"></a>
+            <div class="pix-registro-imagen" style="width: 110px; height: 110px;">
+                <a href="formulario.html?id=${empleado.ID}" id="enlaceEmpleado_${empleado.ID}">${imagenElement}</a>
             </div>
             <div class="pix-registro-contenido">
                 <a href="formulario.html?id=${empleado.ID}" class="enlaceEmpleado">
@@ -213,6 +260,8 @@ function renderizarEmpleados(data) {
         `;
         datosEmpleadosDiv.appendChild(empleadoElement);
     });
+}
+
 
     const botonesMenu = document.querySelectorAll('.pix-mini-menu');
     botonesMenu.forEach(btn => {
@@ -222,7 +271,7 @@ function renderizarEmpleados(data) {
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         });
     });
-}
+
 
 // Función para obtener los datos de los empleados y llamar a la función de renderizado
 function obtenerDatosEmpleados() {
