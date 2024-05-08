@@ -19,6 +19,8 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#112233" />
     <script src="//cdn.pixelinnova.com/pixelone/pix-sistema.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.0.0/classic/translations/es.js"></script>
+
 
     <meta name="msapplication-TileColor" content="#112233" />
     <meta name="theme-color" content="#ffffff" />
@@ -306,16 +308,18 @@ function obtenerDatosEmpleadoPorID(id) {
             const descripcionEmpleado = empleado[0].DESCRIPCION;
 if (descripcionEmpleado) {
     ClassicEditor
-        .create(document.querySelector('#descripcion'), {
-            initialData: descripcionEmpleado
-        })
-        .then(editor => {
-            console.log('Editor de descripción creado y prellenado correctamente');
-            editorCK = editor;
-        })
-        .catch(error => {
-            console.error('Error al crear el editor de descripción:', error);
-        });
+    .create(document.querySelector('#descripcion'), {
+        initialData: descripcionEmpleado,
+        language: 'es' // Aquí especificas el idioma español
+    })
+    .then(editor => {
+        console.log('Editor de descripción creado y prellenado correctamente');
+        editorCK = editor;
+    })
+    .catch(error => {
+        console.error('Error al crear el editor de descripción:', error);
+    });
+
 }
 
             cargarCampos();
